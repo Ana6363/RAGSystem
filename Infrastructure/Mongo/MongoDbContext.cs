@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using Domain.Models;
 
 namespace Infrastructure.Mongo
 {
@@ -17,6 +18,8 @@ namespace Infrastructure.Mongo
             var client = new MongoClient(settings.Value.ConnectionString);
             _database = client.GetDatabase(settings.Value.DatabaseName);
         }
+
+        public IMongoCollection<User> Users => _database.GetCollection<User>("Users");
 
     }
 }
