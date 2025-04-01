@@ -23,6 +23,9 @@ namespace Infrastructure.Mongo
 
         public IMongoCollection<Document> Documents =>_database.GetCollection<Document>("Documents");
 
+        public IMongoCollection<ChatHistory> ChatHistory =>_database.GetCollection<ChatHistory>("ChatHistory");
+
+
 
     }
 }
