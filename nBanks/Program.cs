@@ -1,5 +1,6 @@
 using Infrastructure.Mongo;
 using Infrastructure.Qdrant;
+using Infrastructure.OpenAI;
 using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,6 +20,14 @@ builder.Services.Configure<QdrantSettings>(
     builder.Configuration.GetSection("QdrantSettings"));
 
 builder.Services.AddSingleton<QdrantClientProvider>();
+
+
+builder.Services.Configure<OpenAISettings>(
+    builder.Configuration.GetSection("OpenAI"));
+
+builder.Services.AddSingleton<OpenAIService>();
+
+builder.Services.AddHttpClient(); 
 
 
 // builder.Services.AddScoped<IUserRepository, UserRepository>();
