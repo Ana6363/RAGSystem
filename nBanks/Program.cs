@@ -1,4 +1,5 @@
 using Infrastructure.Mongo;
+using Infrastructure.Qdrant;
 using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +13,13 @@ builder.Services.Configure<MongoSettings>(
     builder.Configuration.GetSection("MongoSettings"));
 
 builder.Services.AddSingleton<MongoDbContext>();
+
+
+builder.Services.Configure<QdrantSettings>(
+    builder.Configuration.GetSection("QdrantSettings"));
+
+builder.Services.AddSingleton<QdrantClientProvider>();
+
 
 // builder.Services.AddScoped<IUserRepository, UserRepository>();
 
