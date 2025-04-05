@@ -24,6 +24,10 @@ namespace Infrastructure.OpenAI
 
         public async Task<string> AskChatAsync(string userPrompt)
         {
+            var request = new HttpRequestMessage(HttpMethod.Post, "chat/completions");
+
+            request.Headers.Add("OpenAI-Project", _settings.ProjectId);
+
             var payload = new
             {
                 model = _settings.Model,
@@ -33,13 +37,20 @@ namespace Infrastructure.OpenAI
                 }
             };
 
-            var content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
+            var json = JsonSerializer.Serialize(payload);
+            request.Content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await _httpClient.PostAsync("chat/completions", content);
+            var response = await _httpClient.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+
             var responseBody = await response.Content.ReadAsStringAsync();
-
             using var doc = JsonDocument.Parse(responseBody);
-            return doc.RootElement.GetProperty("choices")[0].GetProperty("message").GetProperty("content").GetString()!;
+
+            return doc.RootElement
+                .GetProperty("choices")[0]
+                .GetProperty("message")
+                .GetProperty("content")
+                .GetString()!;
         }
     }
 }

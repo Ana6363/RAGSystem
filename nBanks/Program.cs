@@ -23,7 +23,7 @@ builder.Services.AddSingleton<QdrantClientProvider>();
 
 
 builder.Services.Configure<OpenAISettings>(
-    builder.Configuration.GetSection("OpenAI"));
+    builder.Configuration.GetSection("OpenAIsettings"));
 
 builder.Services.AddSingleton<OpenAIService>();
 
