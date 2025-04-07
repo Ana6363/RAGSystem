@@ -28,24 +28,6 @@ namespace nBanks.Application.Users
             return user;
         }
 
-        public static UserDTO ToDTO(string vatNumber)
-        {
-            if (string.IsNullOrWhiteSpace(vatNumber))
-            {
-                throw new ArgumentException("VAT number cannot be null or empty.", nameof(vatNumber));
-            }
-            return new UserDTO(vatNumber);
-        }
-
-        public static User ToDomain(string vatNumber)
-        {
-            if (string.IsNullOrWhiteSpace(vatNumber))
-            {
-                throw new ArgumentException("VAT number cannot be null or empty.", nameof(vatNumber));
-            }
-            return new User(new VATNumber(vatNumber));
-        }
-
 
 
 

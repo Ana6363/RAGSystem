@@ -5,6 +5,9 @@ using Microsoft.Extensions.Options;
 using Domain.Models.Users;
 using Infrastructure.Mongo.Users;
 using nBanks.Application.Users;
+using Domain.Models.Documents;
+using Infrastructure.Mongo.Documents;
+using nBanks.Application.Documents;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -35,6 +38,9 @@ builder.Services.AddHttpClient();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<UserService>();
+
+builder.Services.AddScoped<IDocumentRepository, DocumentRepository>();
+builder.Services.AddScoped<DocumentService>();
 
 var app = builder.Build();
 
