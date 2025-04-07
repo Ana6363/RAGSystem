@@ -41,11 +41,12 @@ namespace nBanks.Controllers
 
             if (res == null)
             {
-                return BadRequest();
+                return NotFound(new { message = "User not found." });
             }
 
             return Ok(res);
         }
+
 
         [HttpDelete("delete")]
         public async Task<IActionResult> DeleteAsync(string vatNumber)
