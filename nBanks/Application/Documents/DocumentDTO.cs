@@ -10,14 +10,17 @@
 
         public string Content { get; set; }
 
-        public DocumentDTO(string content, string fileName, string userId, string? id = null)
+        public DocumentDTO(string userId, string fileName, string content, string? id = null)
+
         {
-            if (string.IsNullOrEmpty(content)) throw new ArgumentNullException(nameof(content));
+            if (string.IsNullOrWhiteSpace(content)) 
+                throw new ArgumentNullException(nameof(content), "Document content cannot be empty.");
 
             FileName = fileName;
             Content = content;
             Id = id;
             UserId = userId;
         }
+
     }
 }

@@ -3,6 +3,7 @@ using Infrastructure.Mongo;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using nBanks.Application.Documents;
+using Infrastructure.OpenAI;
 
 namespace nBanks.Controllers
 {
@@ -11,10 +12,13 @@ namespace nBanks.Controllers
     public class DocumentsController : Controller
     {
         private readonly DocumentService _documentService;
+        private readonly OpenAIService _openAiService;
 
-        public DocumentsController(DocumentService context)
+
+        public DocumentsController(DocumentService context, OpenAIService openAiService)
         {
             _documentService = context;
+            _openAiService = openAiService;
         }
 
         /* [HttpPost("create")]
@@ -44,6 +48,34 @@ namespace nBanks.Controllers
             }
             return Ok(document);
         }
+
+        [HttpPost("upload")]
+        public async Task<IActionResult> UploadAsync([FromForm] DocumentUploadRequest request)
+        {
+            try
+            {
+                Console.WriteLine("📎 Upload request received");
+                Console.WriteLine($"🧾 File: {request.File?.FileName}");
+                Console.WriteLine($"👤 UserId: {request.UserId}");
+
+                if (_openAiService == null)
+                {
+                    Console.WriteLine("❌ OpenAIService is null!");
+                }
+
+                var result = await _documentService.UploadAndProcessDocumentAsync(
+                    request.File, request.UserId, _openAiService);
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"💥 ERROR: {ex.Message}");
+                return BadRequest(ex.Message);
+            }
+        }
+
+
 
         [HttpDelete("delete")]
         public async Task<IActionResult> DeleteDocumentAsync(string name)

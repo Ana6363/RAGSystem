@@ -24,33 +24,45 @@ namespace Infrastructure.OpenAI
 
         public async Task<string> AskChatAsync(string userPrompt)
         {
-            var request = new HttpRequestMessage(HttpMethod.Post, "chat/completions");
-
-            request.Headers.Add("OpenAI-Project", _settings.ProjectId);
-
-            var payload = new
+            try
             {
-                model = _settings.Model,
-                messages = new[]
+                Console.WriteLine("🤖 Sending prompt to OpenAI...");
+
+                var request = new HttpRequestMessage(HttpMethod.Post, "chat/completions");
+                request.Headers.Add("OpenAI-Project", _settings.ProjectId);
+
+                var payload = new
                 {
-                    new { role = "user", content = userPrompt }
-                }
-            };
+                    model = _settings.Model,
+                    messages = new[]
+                    {
+                        new { role = "user", content = userPrompt }
+                    }
+                };
 
-            var json = JsonSerializer.Serialize(payload);
-            request.Content = new StringContent(json, Encoding.UTF8, "application/json");
+                var json = JsonSerializer.Serialize(payload);
+                request.Content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await _httpClient.SendAsync(request);
-            response.EnsureSuccessStatusCode();
+                var response = await _httpClient.SendAsync(request);
+                var responseBody = await response.Content.ReadAsStringAsync();
 
-            var responseBody = await response.Content.ReadAsStringAsync();
-            using var doc = JsonDocument.Parse(responseBody);
+                Console.WriteLine($"🧠 OpenAI response: {responseBody}");
 
-            return doc.RootElement
-                .GetProperty("choices")[0]
-                .GetProperty("message")
-                .GetProperty("content")
-                .GetString()!;
+                response.EnsureSuccessStatusCode();
+
+                using var doc = JsonDocument.Parse(responseBody);
+                return doc.RootElement
+                        .GetProperty("choices")[0]
+                        .GetProperty("message")
+                        .GetProperty("content")
+                        .GetString()!;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"💣 OpenAI call failed: {ex.Message}");
+                throw;
+            }
         }
+
     }
 }

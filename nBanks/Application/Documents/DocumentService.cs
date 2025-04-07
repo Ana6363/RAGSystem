@@ -1,4 +1,5 @@
 ﻿using Domain.Models.Documents;
+using Infrastructure.OpenAI;
 
 namespace nBanks.Application.Documents
 {
@@ -26,20 +27,54 @@ namespace nBanks.Application.Documents
             {
                 throw new InvalidOperationException("Document with this name already exists.");
             }
+
             if (document == null)
             {
                 throw new ArgumentNullException(nameof(document), "Document cannot be null.");
             }
+
             try
             {
                 await _documentRepository.AddDocumentAsync(document);
+
+                // 🧾 Log everything before calling ToDTO
+                Console.WriteLine("✅ Document saved, logging contents:");
+                Console.WriteLine($"📄 document.Id = {document.Id}");
+                Console.WriteLine($"📁 document.fileName = {document.fileName?.ToString() ?? "NULL"}");
+                Console.WriteLine($"📝 document.content = {document.content?.ToString() ?? "NULL"}");
+                Console.WriteLine($"👤 document.UserId = {document.UserId}");
+
+                return DocumentMapper.ToDTO(document); // suspect line
             }
             catch (Exception ex)
             {
                 throw new InvalidOperationException("Error adding document to the database.", ex);
             }
-            return DocumentMapper.ToDTO(document);
         }
+
+
+        public async Task<DocumentDTO> UploadAndProcessDocumentAsync(IFormFile file, string userId, OpenAIService openAiService)
+        {
+            if (file == null || file.Length == 0)
+                throw new ArgumentException("File is empty.", nameof(file));
+
+            string rawContent;
+            using (var reader = new StreamReader(file.OpenReadStream()))
+            {
+                rawContent = await reader.ReadToEndAsync();
+            }
+
+            var openAiResponse = await openAiService.AskChatAsync($"Extract relevant content from this document:\n\n{rawContent}");
+
+            var documentDto = new DocumentDTO(
+                content: openAiResponse,
+                fileName: file.FileName,
+                userId: userId
+            );
+
+            return await AddDocumentAsync(documentDto);
+        }
+
 
         public async Task<DocumentDTO?> DeleteDocumentAsync(string name)
         {

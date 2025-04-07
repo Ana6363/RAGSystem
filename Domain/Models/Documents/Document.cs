@@ -22,11 +22,12 @@ namespace Domain.Models
         {
             if (string.IsNullOrWhiteSpace(contentValue.ToString()))
                 throw new ArgumentException("Content cannot be null or empty.", nameof(contentValue));
-            content = contentValue;
+            this.content = contentValue;
             UserId = userId;
             if (string.IsNullOrWhiteSpace(fileName.ToString()))
                 throw new ArgumentException("File name cannot be null or empty.", nameof(fileName));
-            fileName = fileName;
+            this.fileName = fileName;
         }
+
     }
 }
