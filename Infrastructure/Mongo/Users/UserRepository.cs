@@ -19,12 +19,14 @@ namespace Infrastructure.Mongo.Users
 
         public async Task<User?> GetUserByIdAsync(string id)
         {
-            return await _users.Find(user => user.UserId.Value == id).FirstOrDefaultAsync();
+            return await _users.Find(user => user.Id == id).FirstOrDefaultAsync();
+
         }
 
         public async Task<User?> GetUserByVATNumberAsync(string vatNumber)
         {
-            return await _users.Find(user => user.VATNumber.ToString() == vatNumber).FirstOrDefaultAsync();
+            return await _users.Find(user => user.VATNumber.VATValue == vatNumber).FirstOrDefaultAsync();
+
         }
 
         public async Task AddUserAsync(User user)
@@ -35,7 +37,7 @@ namespace Infrastructure.Mongo.Users
 
         public async Task DeleteUserAsync(string id)
         {
-            await _users.DeleteOneAsync(user => user.UserId.Value == id);
+            await _users.DeleteOneAsync(user => user.Id == id);
         }
 
     }

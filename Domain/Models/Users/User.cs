@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-
 
 namespace Domain.Models.Users
 {
@@ -14,20 +7,16 @@ namespace Domain.Models.Users
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public UserId UserId { get; set; }
+        public string Id { get; set; } = ObjectId.GenerateNewId().ToString();
 
         public VATNumber VATNumber { get; set; }
 
-        public User()
-        {
-        }
+        public User() {}
 
         public User(VATNumber vatNumber)
         {
-            UserId = new UserId();
-            VATNumber = vatNumber ?? throw new ArgumentNullException(nameof(vatNumber));
+            Id = ObjectId.GenerateNewId().ToString();
+            VATNumber = vatNumber;
         }
-       
-
     }
 }
