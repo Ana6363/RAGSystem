@@ -50,15 +50,17 @@ namespace nBanks.Application.Users
             return UserMapper.ToDTO(user);
         }
 
-        public async Task<UserDTO?> DeleteUserAsync(string id)
+        public async Task<UserDTO?> DeleteUserAsync(string vatNumber)
         {
-            var user = await _userRepository.GetUserByVATNumberAsync(id);
+            var user = await _userRepository.GetUserByVATNumberAsync(vatNumber);
             if (user == null)
             {
                 throw new InvalidOperationException("User not found.");
             }
-            await _userRepository.DeleteUserAsync(id);
+
+            await _userRepository.DeleteUserAsync(user.Id);
             return UserMapper.ToDTO(user);
         }
+
     }
 }
