@@ -4,9 +4,13 @@ using MongoDB.Bson.Serialization.Attributes;
 namespace Domain.Models.Users
 {
     public class UserId
+{
+    public string Value { get; set; }
+
+    public UserId()
     {
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
-        public string Id { get; set; } = null!;
+        Value = ObjectId.GenerateNewId().ToString();
     }
+}
+
 }

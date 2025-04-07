@@ -17,14 +17,14 @@ namespace nBanks.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> Create([FromBody] Document doc)
+        public async Task<IActionResult> CreateAsync([FromBody] Document doc)
         {
             await _context.Documents.InsertOneAsync(doc);
             return Ok(new { id = doc.Id });
         }
 
         [HttpGet("user/{userId}")]
-        public async Task<IActionResult> GetDocumentsByUser(string userId)
+        public async Task<IActionResult> GetDocumentsByUserAsync(string userId)
         {
             var docs = await _context.Documents
                 .Find(d => d.UserId == userId)

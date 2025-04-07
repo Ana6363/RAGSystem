@@ -19,5 +19,8 @@ namespace Domain.Models.Users
 
             VATValue = vatValue;
         }
+
+        public override string ToString() => VATValue;
+
     }
 }
