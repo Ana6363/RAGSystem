@@ -37,14 +37,7 @@ namespace nBanks.Application.Documents
             {
                 await _documentRepository.AddDocumentAsync(document);
 
-                // 🧾 Log everything before calling ToDTO
-                Console.WriteLine("✅ Document saved, logging contents:");
-                Console.WriteLine($"📄 document.Id = {document.Id}");
-                Console.WriteLine($"📁 document.fileName = {document.fileName?.ToString() ?? "NULL"}");
-                Console.WriteLine($"📝 document.content = {document.content?.ToString() ?? "NULL"}");
-                Console.WriteLine($"👤 document.UserId = {document.UserId}");
-
-                return DocumentMapper.ToDTO(document); // suspect line
+                return DocumentMapper.ToDTO(document);
             }
             catch (Exception ex)
             {

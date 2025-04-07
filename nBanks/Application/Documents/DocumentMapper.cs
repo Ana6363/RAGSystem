@@ -24,18 +24,11 @@ namespace nBanks.Application.Documents
             {
                 throw new ArgumentNullException(nameof(documentDTO), "DocumentDTO cannot be null.");
             }
-            Console.WriteLine("📦 Mapping DocumentDTO to Domain:");
-            Console.WriteLine($"- DTO.FileName: {documentDTO.FileName}");
-            Console.WriteLine($"- DTO.Content: {documentDTO.Content}");
-            Console.WriteLine($"- DTO.UserId: {documentDTO.UserId}");
             var fileName = new FileName(documentDTO.FileName);
             var content = new Content(documentDTO.Content);
             var document = new Document(documentDTO.UserId,fileName, content);
             document.Id = documentDTO.Id ?? ObjectId.GenerateNewId().ToString();
-
-            Console.WriteLine("✅ Document object created");
-            Console.WriteLine($"- fileName = {document.fileName?.ToString() ?? "NULL"}");
-            Console.WriteLine($"- content = {document.content?.ToString() ?? "NULL"}");
+            
             return document;
         }
 

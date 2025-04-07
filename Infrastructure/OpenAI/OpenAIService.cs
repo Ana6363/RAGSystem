@@ -26,7 +26,6 @@ namespace Infrastructure.OpenAI
         {
             try
             {
-                Console.WriteLine("🤖 Sending prompt to OpenAI...");
 
                 var request = new HttpRequestMessage(HttpMethod.Post, "chat/completions");
                 request.Headers.Add("OpenAI-Project", _settings.ProjectId);
@@ -46,8 +45,6 @@ namespace Infrastructure.OpenAI
                 var response = await _httpClient.SendAsync(request);
                 var responseBody = await response.Content.ReadAsStringAsync();
 
-                Console.WriteLine($"🧠 OpenAI response: {responseBody}");
-
                 response.EnsureSuccessStatusCode();
 
                 using var doc = JsonDocument.Parse(responseBody);
@@ -59,7 +56,6 @@ namespace Infrastructure.OpenAI
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"💣 OpenAI call failed: {ex.Message}");
                 throw;
             }
         }

@@ -54,15 +54,6 @@ namespace nBanks.Controllers
         {
             try
             {
-                Console.WriteLine("📎 Upload request received");
-                Console.WriteLine($"🧾 File: {request.File?.FileName}");
-                Console.WriteLine($"👤 UserId: {request.UserId}");
-
-                if (_openAiService == null)
-                {
-                    Console.WriteLine("❌ OpenAIService is null!");
-                }
-
                 var result = await _documentService.UploadAndProcessDocumentAsync(
                     request.File, request.UserId, _openAiService);
 
@@ -70,7 +61,6 @@ namespace nBanks.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"💥 ERROR: {ex.Message}");
                 return BadRequest(ex.Message);
             }
         }
