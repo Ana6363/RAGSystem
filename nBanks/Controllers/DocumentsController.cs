@@ -54,6 +54,11 @@ namespace nBanks.Controllers
         {
             try
             {
+                if (request.File == null || !request.File.FileName.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
+                {
+                    return BadRequest("Only PDF files are allowed.");
+                }
+
                 var result = await _documentService.UploadAndProcessDocumentAsync(
                     request.File, request.UserId, _openAiService);
 
@@ -64,8 +69,6 @@ namespace nBanks.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
-
 
         [HttpDelete("delete")]
         public async Task<IActionResult> DeleteDocumentAsync(string name)
