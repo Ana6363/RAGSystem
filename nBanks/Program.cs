@@ -2,6 +2,10 @@ using Infrastructure.Mongo;
 using Infrastructure.Qdrant;
 using Infrastructure.OpenAI;
 using Microsoft.Extensions.Options;
+using Domain.Models.Users;
+using Infrastructure.Mongo.Users;
+using nBanks.Application.Users;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,8 +33,8 @@ builder.Services.AddSingleton<OpenAIService>();
 
 builder.Services.AddHttpClient(); 
 
-
-// builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<UserService>();
 
 var app = builder.Build();
 

@@ -27,6 +27,7 @@ namespace nBanks.Application.Users
 
         public async Task<UserDTO> AddUserAsync(UserDTO userDTO)
         {
+            var dto = new UserDTO(userDTO.VATNumber);
             var user = UserMapper.ToDomain(userDTO);
 
             if (await _userRepository.GetUserByVATNumberAsync(user.VATNumber.ToString()) != null)
@@ -38,8 +39,14 @@ namespace nBanks.Application.Users
             {
                 throw new ArgumentNullException(nameof(user), "User cannot be null.");
             }
-            await _userRepository.AddUserAsync(user);
-
+            try
+            {
+                await _userRepository.AddUserAsync(user);
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException("Error adding user to the database.", ex);
+            }
             return UserMapper.ToDTO(user);
         }
 

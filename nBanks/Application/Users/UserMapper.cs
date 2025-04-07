@@ -1,5 +1,7 @@
 ﻿using Application.Users;
 using Domain.Models.Users;
+using MongoDB.Bson;
+
 
 namespace nBanks.Application.Users
 {
@@ -11,7 +13,8 @@ namespace nBanks.Application.Users
             {
                 throw new ArgumentNullException(nameof(user), "User cannot be null.");
             }
-            return new UserDTO(user.VATNumber.ToString());
+            return new UserDTO(user.VATNumber.ToString(), user.Id);
+
         }
 
         public static User ToDomain(UserDTO userDTO)
@@ -20,7 +23,9 @@ namespace nBanks.Application.Users
             {
                 throw new ArgumentNullException(nameof(userDTO), "UserDTO cannot be null.");
             }
-            return new User(new VATNumber(userDTO.VATNumber));
+            var user = new User(new VATNumber(userDTO.VATNumber));
+            user.Id = userDTO.Id ?? ObjectId.GenerateNewId().ToString();
+            return user;
         }
 
         public static UserDTO ToDTO(string vatNumber)
