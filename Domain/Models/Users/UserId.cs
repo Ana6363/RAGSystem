@@ -1,9 +1,9 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace Domain.Models
+namespace Domain.Models.Users
 {
-    public class User
+    public class UserId
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]

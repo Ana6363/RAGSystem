@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Domain.Models;
+using Domain.Models.Users;
 
 namespace Infrastructure.Mongo
 {
