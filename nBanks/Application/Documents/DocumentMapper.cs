@@ -1,6 +1,7 @@
 ﻿using System;
 using MongoDB.Bson;
 using Domain.Models;
+using Domain.Models.Documents;
 
 
 namespace nBanks.Application.Documents
@@ -23,7 +24,9 @@ namespace nBanks.Application.Documents
             {
                 throw new ArgumentNullException(nameof(documentDTO), "DocumentDTO cannot be null.");
             }
-            var document = new Document(documentDTO.Content, documentDTO.fileName);
+            var fileName = new FileName(documentDTO.FileName);
+            var content = new Content(documentDTO.Content);
+            var document = new Document(documentDTO.UserId,fileName, content);
             document.Id = documentDTO.Id ?? ObjectId.GenerateNewId().ToString();
             return document;
         }

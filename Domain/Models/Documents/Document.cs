@@ -18,12 +18,15 @@ namespace Domain.Models
 
         public Document() { }
 
-        public Document(string userId, Content contentValue)
+        public Document(string userId, FileName fileName, Content contentValue)
         {
             if (string.IsNullOrWhiteSpace(contentValue.ToString()))
                 throw new ArgumentException("Content cannot be null or empty.", nameof(contentValue));
             content = contentValue;
             UserId = userId;
+            if (string.IsNullOrWhiteSpace(fileName.ToString()))
+                throw new ArgumentException("File name cannot be null or empty.", nameof(fileName));
+            fileName = fileName;
         }
     }
 }

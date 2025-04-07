@@ -44,7 +44,7 @@ namespace nBanks.Controllers
             }
             return Ok(document);
         }
-        
+
         [HttpDelete("delete")]
         public async Task<IActionResult> DeleteDocumentAsync(string name)
         {
@@ -62,4 +62,5 @@ namespace nBanks.Controllers
                 return NotFound(ex.Message);
             }
         }
+    }
 }

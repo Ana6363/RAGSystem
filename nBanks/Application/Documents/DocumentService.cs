@@ -19,7 +19,7 @@ namespace nBanks.Application.Documents
 
         public async Task<DocumentDTO> AddDocumentAsync(DocumentDTO documentDTO)
         {
-            var dto = new DocumentDTO(documentDTO.Content, documentDTO.FileName);
+            var dto = new DocumentDTO(documentDTO.Content, documentDTO.FileName, documentDTO.UserId);
             var document = DocumentMapper.ToDomain(documentDTO);
 
             if (await _documentRepository.GetDocumentByNameAsync(document.fileName.ToString()) != null)
