@@ -2,37 +2,61 @@ using Infrastructure.Mongo;
 using Domain.Models.Users;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
+using nBanks.Application.Users;
+using Application.Users;
 
 
 namespace nBanks.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class UsersController : ControllerBase
+    public class UsersController : Controller
     {
-        private readonly MongoDbContext _context;
+        private readonly UserService _userService;
 
-        public UsersController(MongoDbContext context)
+
+
+        public UsersController(UserService context)
         {
-            _context = context;
+            _userService = context;
         }
+
 
         [HttpPost("create")]
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> CreateAsync(UserDTO userDTO)
         {
-            var user = new User();
-            await _context.Users.InsertOneAsync(user);
-            return Ok(new { id = user.UserId });
+            var res = await _userService.AddUserAsync(userDTO);
+            if (res == null)
+            {
+                return BadRequest();
+            }
+            return Ok();
 
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(string id)
+        [HttpGet("getByVat")]
+        public async Task<IActionResult> GetByVatNumberAsync(string vat)
         {
-            var user = await _context.Users.Find(u => u.UserId.Value == id).FirstOrDefaultAsync();
+            var res = await _userService.GetUserByVATNumberAsync(vat);
 
-            if (user == null) return NotFound();
-            return Ok(user);
+            if (res == null)
+            {
+                return BadRequest();
+            }
+
+            return Ok(res);
         }
+
+        [HttpDelete("delete")]
+        public async Task<IActionResult> DeleteAsync(string vatNumber)
+        {
+            var res = await _userService.DeleteUserAsync(vatNumber);
+            if (res == null)
+            {
+                return BadRequest();
+            }
+            return Ok();
+        }
+
     }
 }

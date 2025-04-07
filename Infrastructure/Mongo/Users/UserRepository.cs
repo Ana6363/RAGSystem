@@ -33,11 +33,6 @@ namespace Infrastructure.Mongo.Users
         }
 
 
-        public async Task UpdateUserAsync(User user)
-        {
-            await _users.ReplaceOneAsync(u => u.UserId.Value == user.UserId.Value, user);
-        }
-
         public async Task DeleteUserAsync(string id)
         {
             await _users.DeleteOneAsync(user => user.UserId.Value == id);

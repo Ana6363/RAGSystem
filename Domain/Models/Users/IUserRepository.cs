@@ -11,7 +11,6 @@ namespace Domain.Models.Users
         Task<User?> GetUserByIdAsync(string id);
         Task<User?> GetUserByVATNumberAsync(string vatNumber);
         Task AddUserAsync(User user);
-        Task UpdateUserAsync(User user);
         Task DeleteUserAsync(string id);
     }
 }
