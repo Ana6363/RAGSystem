@@ -7,6 +7,7 @@ using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Domain.Models;
 using Domain.Models.Users;
+using Domain.Models.ChatHistories;
 
 namespace Infrastructure.Mongo
 {
@@ -23,8 +24,8 @@ namespace Infrastructure.Mongo
         public IMongoCollection<User> Users => _database.GetCollection<User>("Users");
 
         public IMongoCollection<Document> Documents =>_database.GetCollection<Document>("Documents");
-
-        public IMongoCollection<ChatHistory> ChatHistory =>_database.GetCollection<ChatHistory>("ChatHistory");
+        
+        public IMongoCollection<ChatHistory> ChatHistories=>_database.GetCollection<ChatHistory>("ChatHistories");
 
 
 

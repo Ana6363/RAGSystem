@@ -1,7 +1,8 @@
-using Domain.Models;
+using Domain.Models.ChatHistories;
 using Infrastructure.Mongo;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
+using nBanks.Application.ChatHistories;
 
 namespace nBanks.Controllers
 {
@@ -9,28 +10,64 @@ namespace nBanks.Controllers
     [Route("api/[controller]")]
     public class ChatHistoryController : ControllerBase
     {
-        private readonly MongoDbContext _context;
+        private readonly ChatHistoryService _chatHistoryService;
 
-        public ChatHistoryController(MongoDbContext context)
+        public ChatHistoryController(ChatHistoryService context)
         {
-            _context = context;
+            _chatHistoryService = context;
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> Create([FromBody] ChatHistory chat)
+        public async Task<IActionResult> CreateAsync(ChatHistoryDTO dto)
         {
-            await _context.ChatHistory.InsertOneAsync(chat);
-            return Ok(new { id = chat.Id });
+            var res = await _chatHistoryService.AddChatHistory(dto);
+            if (res == null)
+            {
+                return BadRequest();
+            }
+            return Ok();
         }
 
-        [HttpGet("user/{userId}")]
+        [HttpGet("getByUser")]
         public async Task<IActionResult> GetByUser(string userId)
         {
-            var history = await _context.ChatHistory
-                .Find(c => c.UserId == userId)
-                .ToListAsync();
-
-            return Ok(history);
+            var res = await _chatHistoryService.GetAllChatHistories(userId);
+            if (res == null)
+            {
+                return NotFound(new { message = "Chat history not found." });
+            }
+            return Ok(res);
         }
+
+        [HttpPut("update")]
+        public async Task<IActionResult> UpdateAsync(ChatHistoryDTO dto)
+        {
+            try
+            {
+                await _chatHistoryService.UpdateChatHistory(dto);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete("delete")]
+        public async Task<IActionResult> DeleteAsync(string id)
+        {
+            try
+            {
+                await _chatHistoryService.DeleteChatHistory(id);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+
     }
 }

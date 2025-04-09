@@ -21,23 +21,6 @@ namespace nBanks.Controllers
             _openAiService = openAiService;
         }
 
-        /* [HttpPost("create")]
-         public async Task<IActionResult> CreateAsync()
-         {
-
-         }
-
-         [HttpGet("user")]
-         public async Task<IActionResult> GetDocumentsByUserAsync(string userId)
-         {
-             var documents = await _documentService.GetDocumentsByUserIdAsync(userId);
-             if (documents == null)
-             {
-                 return NotFound();
-             }
-         }
-        */
-
         [HttpGet("{id}")]
         public async Task<IActionResult> GetDocumentByNameAsync(string id)
         {
