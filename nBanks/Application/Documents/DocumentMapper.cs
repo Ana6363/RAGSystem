@@ -15,7 +15,7 @@ namespace nBanks.Application.Documents
             {
                 throw new ArgumentNullException(nameof(document), "Document cannot be null.");
             }
-            return new DocumentDTO(document.Id, document.fileName.ToString(), document.content.ToString());
+            return new DocumentDTO(document.UserId, document.fileName.ToString(), document.content.ToString(), document.Id);
         }
 
         public static Document ToDomain(DocumentDTO documentDTO)

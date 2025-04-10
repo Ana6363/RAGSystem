@@ -1,5 +1,8 @@
 ﻿using Domain.Models.Documents;
 using Infrastructure.OpenAI;
+using System.Text;
+using UglyToad.PdfPig;
+using UglyToad.PdfPig.Content;
 
 namespace nBanks.Application.Documents
 {
@@ -52,12 +55,28 @@ namespace nBanks.Application.Documents
                 throw new ArgumentException("File is empty.", nameof(file));
 
             string rawContent;
-            using (var reader = new StreamReader(file.OpenReadStream()))
+
+            if (file.FileName.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
             {
+                using var pdfStream = file.OpenReadStream();
+                using var pdf = PdfDocument.Open(pdfStream);
+                var builder = new StringBuilder();
+
+                foreach (Page page in pdf.GetPages())
+                {
+                    builder.AppendLine(page.Text);
+                }
+
+                rawContent = builder.ToString();
+            }
+            else
+            {
+                using var reader = new StreamReader(file.OpenReadStream());
                 rawContent = await reader.ReadToEndAsync();
             }
 
-            var openAiResponse = await openAiService.AskChatAsync($"Extract relevant content from this document:\n\n{rawContent}");
+            var openAiResponse = await openAiService.AskChatAsync(
+                $"Extract relevant content from this document:\n\n{rawContent}");
 
             var documentDto = new DocumentDTO(
                 content: openAiResponse,
