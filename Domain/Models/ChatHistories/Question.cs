@@ -21,5 +21,7 @@ namespace Domain.Models.ChatHistories
                 throw new ArgumentException("Question cannot be null or empty.", nameof(questionValue));
             QuestionValue = questionValue;
         }
+
+        public override string ToString() => QuestionValue;
     }
 }
