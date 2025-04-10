@@ -12,7 +12,8 @@ namespace nBanks.Application.ChatHistories
             return new ChatHistoryDTO(
                 chatHistory.UserId,
                 chatHistory.Question.ToString(),
-                chatHistory.Answer.ToString()
+                chatHistory.Answer.ToString(),
+                chatHistory.Id
                 );
         }
         public static ChatHistory MapToDomain(ChatHistoryDTO chatHistoryDTO)
