@@ -60,7 +60,7 @@ namespace nBanks.Application.ChatHistories
             {
                 throw new Exception("Chat history not found.");
             }
-            if (chatHistory.UserId != id)
+            if (chatHistory.Id != id)
             {
                 throw new Exception("You cannot delete this chat history.");
             }
