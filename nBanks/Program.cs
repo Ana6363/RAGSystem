@@ -8,6 +8,9 @@ using nBanks.Application.Users;
 using Domain.Models.Documents;
 using Infrastructure.Mongo.Documents;
 using nBanks.Application.Documents;
+using Domain.Models.ChatHistories;
+using Infrastructure.Mongo.ChatHistories;
+using nBanks.Application.ChatHistories;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -41,6 +44,9 @@ builder.Services.AddScoped<UserService>();
 
 builder.Services.AddScoped<IDocumentRepository, DocumentRepository>();
 builder.Services.AddScoped<DocumentService>();
+
+builder.Services.AddScoped<IChatHistoryRepository, ChatHistoryRepository>();
+builder.Services.AddScoped<ChatHistoryService>();
 
 var app = builder.Build();
 
