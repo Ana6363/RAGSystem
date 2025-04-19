@@ -28,6 +28,10 @@ def embed_and_store(file_id: str):
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100)
     chunks = text_splitter.split_documents(docs)
 
+    # After splitting
+    for chunk in chunks:
+        chunk.metadata["file_id"] = file_id
+
     print(f"📄 Split PDF into {len(chunks)} chunks")
 
     # 3. Generate embeddings
