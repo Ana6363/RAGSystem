@@ -5,39 +5,42 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_openai import OpenAIEmbeddings
 from langchain_community.vectorstores import Qdrant
 
-# Load environment variables
 load_dotenv()
 
 QDRANT_URL = os.getenv("QDRANT_URL")
 QDRANT_API_KEY = os.getenv("QDRANT_API_KEY")
 QDRANT_COLLECTION = os.getenv("QDRANT_COLLECTION", "nbanks_documents")
 PDF_FOLDER = os.getenv("PDF_FOLDER", "./pdfs")
-
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
-def embed_and_store(file_id: str):
-    file_path = os.path.join(PDF_FOLDER, f"{file_id}.pdf")
-    if not os.path.exists(file_path):
-        raise FileNotFoundError(f"❌ File not found: {file_path}")
 
-    # 1. Load the PDF
+def embed_and_store(file_id: str):
+    file_path = os.path.join(PDF_FOLDER, f"{file_id}.pdf") # Construct the full path to the PDF file(file_id + PDF_FOLDER from .env)
+    
+    if not os.path.exists(file_path):
+        raise FileNotFoundError(f"File not found: {file_path}")
+
+    # Load the PDF file - this will read the content of the PDF and convert it into a format that can be processed by LangChain.
+    # The loader will extract text from the PDF and create a list of documents.
     loader = PyPDFLoader(file_path)
     docs = loader.load()
 
-    # 2. Split into chunks
+    # Split the text into manageable chunks
+    # 100 characters of overlap between adjacent chunks
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100)
     chunks = text_splitter.split_documents(docs)
 
-    # After splitting
+    # Adds file_id to each chunk so later we can filter search results to just this PDF
     for chunk in chunks:
         chunk.metadata["file_id"] = file_id
 
     print(f"📄 Split PDF into {len(chunks)} chunks")
 
-    # 3. Generate embeddings
+    # Creates embeddings (vectors) for the text using OpenAI’s model
     embeddings = OpenAIEmbeddings(api_key=OPENAI_API_KEY)
 
-    # 4. Upload to Qdrant Cloud
+    # Sends the chunks + their vectors to Qdrant Cloud collection.
+    # They’re now stored, searchable, and ready to be queried later!
     vectorstore = Qdrant.from_documents(
         documents=chunks,
         embedding=embeddings,

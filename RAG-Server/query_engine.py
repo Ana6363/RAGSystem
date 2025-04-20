@@ -34,12 +34,20 @@ vectorstore = Qdrant(
     embeddings=embeddings,
 )
 
+# Creates a LangChain-compatible wrapper around OpenAI’s API. It tells LangChain:
+# This object (llm) knows how to:
+# Format prompts
+# Make HTTP requests to OpenAI’s API
+# Handle the response
 llm = OpenAI(temperature=0, openai_api_key=OPENAI_API_KEY)
 
 
 def query_pdf(file_id: str, question: str) -> str:
     
     # Semantic Search in Qdrant
+    # Embeddings are used to find the most relevant chunks
+    # The filter is used to limit the search to a specific file_id
+    # The k parameter is used to limit the number of chunks returned
     relevant_docs = vectorstore.similarity_search(
         query=question,
         k=4,
@@ -49,6 +57,7 @@ def query_pdf(file_id: str, question: str) -> str:
     if not relevant_docs:
         raise ValueError(f"No chunks found for file_id: {file_id}")
 
-    chain = load_qa_chain(llm, chain_type="stuff")
-    result = chain.run(input_documents=relevant_docs, question=question)
+    # Load the QA chain
+    chain = load_qa_chain(llm, chain_type="stuff") # Loads a prebuilt chain template for question answering.
+    result = chain.run(input_documents=relevant_docs, question=question) # Runs the chain with the loaded documents and the user's question.
     return result
