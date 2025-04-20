@@ -52,3 +52,5 @@ def embed_and_store(file_id: str):
 # Example usage
 if __name__ == "__main__":
     embed_and_store("mock_document_1")
+    embed_and_store("mock_document_2")
+    embed_and_store("mock_document_3")

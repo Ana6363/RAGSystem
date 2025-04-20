@@ -6,8 +6,6 @@ import os
 
 load_dotenv()
 
-print("Model:", os.getenv("OPENAI_MODEL"))
-
 app = FastAPI()
 
 #Defines de expected format of the resquest body.
