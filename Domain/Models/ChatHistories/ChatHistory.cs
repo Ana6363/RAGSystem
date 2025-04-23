@@ -12,20 +12,16 @@ namespace Domain.Models.ChatHistories
         [BsonRepresentation(BsonType.ObjectId)]
         public string UserId { get; set; }
 
-        public Question? Question { get; set; }
-        public Answer? Answer { get; set; }
+        public List<Question> Questions { get; set; } = new();
+        public List<Answer> Answers { get; set; } = new();
 
         public ChatHistory() { }
 
-        public ChatHistory(string userId, Question question, Answer answer)
+        public ChatHistory(string userId, List<Question>? questions = null, List<Answer>? answers = null)
         {
             UserId = userId;
-            if (question == null)
-                throw new ArgumentNullException(nameof(question), "Question cannot be null.");
-            Question = question;
-            if (answer == null)
-                throw new ArgumentNullException(nameof(answer), "Answer cannot be null.");
-            Answer = answer;
+            Questions = questions ?? new List<Question>();
+            Answers = answers ?? new List<Answer>();
         }
     }
 }

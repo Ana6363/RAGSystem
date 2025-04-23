@@ -20,13 +20,17 @@ namespace nBanks.Controllers
         [HttpPost("create")]
         public async Task<IActionResult> CreateAsync(ChatHistoryDTO dto)
         {
-            var res = await _chatHistoryService.AddChatHistory(dto);
-            if (res == null)
+            try
             {
-                return BadRequest();
+                var res = await _chatHistoryService.AddChatHistory(dto);
+                return Ok(res); 
             }
-            return Ok();
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
+
 
         [HttpGet("getByUser")]
         public async Task<IActionResult> GetByUser(string userId)
@@ -42,6 +46,13 @@ namespace nBanks.Controllers
         [HttpPut("update")]
         public async Task<IActionResult> UpdateAsync(ChatHistoryDTO dto)
         {
+            if (dto == null || string.IsNullOrWhiteSpace(dto.Id) ||
+                dto.Questions == null || dto.Questions.Count == 0 ||
+                dto.Answers == null || dto.Answers.Count == 0)
+            {
+                return BadRequest(new { message = "Invalid update payload: must include at least one question and answer." });
+            }
+
             try
             {
                 await _chatHistoryService.UpdateChatHistory(dto);
@@ -49,9 +60,10 @@ namespace nBanks.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { message = ex.Message });
             }
         }
+
 
         [HttpDelete("delete")]
         public async Task<IActionResult> DeleteAsync(string id)
