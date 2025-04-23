@@ -61,3 +61,33 @@ def query_pdf(file_id: str, question: str) -> str:
     chain = load_qa_chain(llm, chain_type="stuff") # Loads a prebuilt chain template for question answering.
     result = chain.run(input_documents=relevant_docs, question=question) # Runs the chain with the loaded documents and the user's question.
     return result
+
+"""
+
+ def query_pdfs(file_ids: list, question: str) -> str:
+    # Initialize an empty list to collect relevant documents
+    all_relevant_docs = []
+
+    # Iterate over all file_ids and search for relevant chunks
+    for file_id in file_ids:
+        relevant_docs = vectorstore.similarity_search(
+            query=question,
+            k=4,
+            filter={"file_id": file_id}
+        )
+
+        if relevant_docs:
+            all_relevant_docs.extend(relevant_docs)
+        else:
+            print(f"No chunks found for file_id: {file_id}")
+
+    if not all_relevant_docs:
+        raise ValueError("No relevant chunks found in any of the provided file_ids.")
+
+    # Load the QA chain
+    chain = load_qa_chain(llm, chain_type="stuff")  # Loads a prebuilt chain template for question answering
+    result = chain.run(input_documents=all_relevant_docs, question=question)  # Runs the chain with the combined documents and the user's question
+
+    return result 
+
+"""
