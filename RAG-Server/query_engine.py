@@ -43,7 +43,6 @@ llm = OpenAI(temperature=0, openai_api_key=OPENAI_API_KEY)
 
 
 def query_pdf(file_id: str, question: str) -> str:
-    
     # Semantic Search in Qdrant
     # Embeddings are used to find the most relevant chunks
     # The filter is used to limit the search to a specific file_id
@@ -58,13 +57,12 @@ def query_pdf(file_id: str, question: str) -> str:
         raise ValueError(f"No chunks found for file_id: {file_id}")
 
     # Load the QA chain
-    chain = load_qa_chain(llm, chain_type="stuff") # Loads a prebuilt chain template for question answering.
-    result = chain.run(input_documents=relevant_docs, question=question) # Runs the chain with the loaded documents and the user's question.
+    chain = load_qa_chain(llm, chain_type="stuff")  # Loads a prebuilt chain template for question answering.
+    result = chain.run(input_documents=relevant_docs, question=question)  # Runs the chain with the loaded documents and the user's question.
     return result
 
-"""
 
- def query_pdfs(file_ids: list, question: str) -> str:
+def query_pdfs(file_ids: list, question: str) -> str:
     # Initialize an empty list to collect relevant documents
     all_relevant_docs = []
 
@@ -88,6 +86,4 @@ def query_pdf(file_id: str, question: str) -> str:
     chain = load_qa_chain(llm, chain_type="stuff")  # Loads a prebuilt chain template for question answering
     result = chain.run(input_documents=all_relevant_docs, question=question)  # Runs the chain with the combined documents and the user's question
 
-    return result 
-
-"""
+    return result
