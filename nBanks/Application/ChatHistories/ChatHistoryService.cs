@@ -3,16 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Domain.Models.ChatHistories;
+using nBanks.Application.Documents;
+using nBanks.Application;
 
 namespace nBanks.Application.ChatHistories
 {
     public class ChatHistoryService
     {
         private readonly IChatHistoryRepository _chatHistoryRepository;
+        private readonly DocumentService _documentService;
 
-        public ChatHistoryService(IChatHistoryRepository chatHistoryRepository)
+        public ChatHistoryService(IChatHistoryRepository chatHistoryRepository, DocumentService documentService)
         {
             _chatHistoryRepository = chatHistoryRepository;
+            _documentService = documentService;
         }
 
         public async Task<ChatHistoryDTO> GetChatHistoryById(string id)
@@ -97,5 +101,46 @@ namespace nBanks.Application.ChatHistories
                 throw new Exception("Error deleting chat history: " + ex.Message);
             }
         }
+
+        public async Task<string> AskQuestionAndStoreAsync(string chatHistoryId, string question)
+        {
+            var existingChatHistory = await _chatHistoryRepository.GetChatHistoryByIdAsync(chatHistoryId);
+            if (existingChatHistory == null)
+            {
+                throw new Exception("Chat history not found.");
+            }
+
+            string userId = existingChatHistory.UserId;
+
+            var documents = await _documentService.GetDocumentByUserIdAsync(userId);
+            var fileIds = documents?.Select(d => d.Id).ToList() ?? new List<string>();
+
+            if (fileIds.Count == 0)
+            {
+                throw new Exception("No documents found for the user.");
+            }
+
+            string scriptPath = Path.Combine(Directory.GetCurrentDirectory(), "RAG-Server", "query_engine.py");
+
+            var answer = await PythonRunner.RunPythonScriptAsync(scriptPath, fileIds, question);
+
+            if (string.IsNullOrWhiteSpace(answer))
+            {
+                throw new Exception("No answer received from the Python script.");
+            }
+
+            var updateDTO = new ChatHistoryDTO
+            {
+                Id = chatHistoryId,
+                Questions = new List<string> { question },
+                Answers = new List<string> { answer }
+            };
+
+            await UpdateChatHistory(updateDTO);
+
+            return answer;
+        }
+
+
     }
 }

@@ -25,9 +25,9 @@ namespace Infrastructure.Mongo.Documents
             return await _documents.Find(document => document.fileName.FileNameValue == name).FirstOrDefaultAsync();
         }
 
-        public async Task<Document?> GetDocumentByUserIdAsync(string userId)
+        public async Task<List<Document>?> GetDocumentByUserIdAsync(string userId)
         {
-            return await _documents.Find(document => document.UserId == userId).FirstOrDefaultAsync();
+            return await _documents.Find(document => document.UserId == userId).ToListAsync();
         }
 
 

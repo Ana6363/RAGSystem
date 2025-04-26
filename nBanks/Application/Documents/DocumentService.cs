@@ -3,6 +3,7 @@ using Infrastructure.OpenAI;
 using System.Text;
 using UglyToad.PdfPig;
 using UglyToad.PdfPig.Content;
+using nBanks.Application;
 
 namespace nBanks.Application.Documents
 {
@@ -20,6 +21,13 @@ namespace nBanks.Application.Documents
             var document = await _documentRepository.GetDocumentByNameAsync(id);
             return document == null ? null : DocumentMapper.ToDTO(document);
         }
+
+        public async Task<List<DocumentDTO>> GetDocumentsByUserIdAsync(string userId)
+        {
+            var documents = await _documentRepository.GetDocumentsByUserIdAsync(userId);
+            return documents.Select(DocumentMapper.ToDTO).ToList();
+        }
+
 
         public async Task<DocumentDTO> AddDocumentAsync(DocumentDTO documentDTO)
         {
@@ -40,6 +48,13 @@ namespace nBanks.Application.Documents
             {
                 await _documentRepository.AddDocumentAsync(document);
 
+                // Call the new method to run the embed_and_store script with the file ID
+                var fileId = document.fileName.ToString();
+                string pythonScriptPath =  Path.Combine(Directory.GetCurrentDirectory(), "RAG-Server", "embed_and_store.py");
+
+                // Call the new PythonRunner method to process the document
+                await PythonRunner.EmbedAndStoreDocumentAsync(pythonScriptPath, fileId);
+
                 return DocumentMapper.ToDTO(document);
             }
             catch (Exception ex)
@@ -47,6 +62,7 @@ namespace nBanks.Application.Documents
                 throw new InvalidOperationException("Error adding document to the database.", ex);
             }
         }
+
 
 
         public async Task<DocumentDTO> UploadAndProcessDocumentAsync(IFormFile file, string userId, OpenAIService openAiService)

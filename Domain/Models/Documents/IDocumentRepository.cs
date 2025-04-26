@@ -9,7 +9,7 @@ namespace Domain.Models.Documents
     public interface IDocumentRepository
     {
         Task<Document?> GetDocumentByNameAsync(string name);
-        Task<Document?> GetDocumentByUserIdAsync(string userId);
+        Task<List<Document>?> GetDocumentByUserIdAsync(string userId);
         Task AddDocumentAsync(Document document);
         Task DeleteDocumentAsync(string id);
     }

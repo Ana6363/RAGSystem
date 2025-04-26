@@ -79,6 +79,26 @@ namespace nBanks.Controllers
             }
         }
 
+        [HttpPost("ask")]
+        public async Task<IActionResult> AskQuestionAsync(string chatHistoryId, string question)
+        {
+            if (string.IsNullOrWhiteSpace(chatHistoryId) || string.IsNullOrWhiteSpace(question))
+            {
+                return BadRequest(new { message = "Chat history ID and question must be provided." });
+            }
+
+            try
+            {
+                var answer = await _chatHistoryService.AskQuestionAndStoreAsync(chatHistoryId, question);
+                return Ok(new { question, answer });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+
 
 
     }

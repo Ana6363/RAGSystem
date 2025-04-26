@@ -87,3 +87,27 @@ def query_pdfs(file_ids: list, question: str) -> str:
     result = chain.run(input_documents=all_relevant_docs, question=question)  # Runs the chain with the combined documents and the user's question
 
     return result
+
+
+if __name__ == "__main__":
+    import sys
+    import json
+
+    if len(sys.argv) < 3:
+        print(json.dumps({"error": "Usage: script.py <file_ids_json> <question>"}))
+        sys.exit(1)
+
+    file_ids_json = sys.argv[1]
+    question = sys.argv[2]
+
+    try:
+        file_ids = json.loads(file_ids_json)  # Expecting a JSON list from C#
+        if not isinstance(file_ids, list):
+            raise ValueError("file_ids must be a list.")
+
+        answer = query_pdfs(file_ids, question)
+        print(json.dumps({"answer": answer}))
+    except Exception as e:
+        print(json.dumps({"error": str(e)}))
+        sys.exit(1)
+

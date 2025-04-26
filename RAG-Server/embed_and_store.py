@@ -51,9 +51,16 @@ def embed_and_store(file_id: str):
 
     print(f"✅ Embedded and stored {len(chunks)} chunks in Qdrant Cloud!")
 
-
+"""
 # Example usage
 if __name__ == "__main__":
     embed_and_store("mock_document_1")
     embed_and_store("mock_document_2")
     embed_and_store("mock_document_3")
+"""
+
+# Main function to handle file processing
+if __name__ == "__main__":
+    import sys
+    file_id = sys.argv[1]  # Get the file_id passed from the .NET app
+    embed_and_store(file_id)
