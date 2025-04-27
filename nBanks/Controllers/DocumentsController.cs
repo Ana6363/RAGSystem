@@ -70,5 +70,24 @@ namespace nBanks.Controllers
                 return NotFound(ex.Message);
             }
         }
+
+        [HttpGet("user/{userId}")]
+        public async Task<IActionResult> GetDocumentsByUserIdAsync(string userId)
+        {
+            try
+            {
+                var documents = await _documentService.GetDocumentsByUserIdAsync(userId);
+                if (documents == null || documents.Count == 0)
+                {
+                    return NotFound(new { message = "No documents found for this user." });
+                }
+                return Ok(documents);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
     }
 }
