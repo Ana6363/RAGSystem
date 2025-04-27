@@ -112,7 +112,7 @@ namespace nBanks.Application.ChatHistories
 
             string userId = existingChatHistory.UserId;
 
-            var documents = await _documentService.GetDocumentByUserIdAsync(userId);
+            var documents = await _documentService.GetDocumentsByUserIdAsync(userId);
             var fileIds = documents?.Select(d => d.Id).ToList() ?? new List<string>();
 
             if (fileIds.Count == 0)
@@ -129,12 +129,13 @@ namespace nBanks.Application.ChatHistories
                 throw new Exception("No answer received from the Python script.");
             }
 
-            var updateDTO = new ChatHistoryDTO
-            {
-                Id = chatHistoryId,
-                Questions = new List<string> { question },
-                Answers = new List<string> { answer }
-            };
+            var updateDTO = new ChatHistoryDTO(
+                userId, 
+                new List<string> { question },
+                new List<string> { answer },  
+                chatHistoryId           
+            );
+
 
             await UpdateChatHistory(updateDTO);
 
