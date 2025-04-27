@@ -1,6 +1,9 @@
+using System.Diagnostics;
+using System.Text.Json;
+
+
 namespace nBanks.Application
-{
-    public class PythonRunner
+{    public class PythonRunner
     {
         public static async Task<string> RunPythonScriptAsync(string scriptPath, List<string> fileIds, string question)
         {
@@ -33,14 +36,7 @@ namespace nBanks.Application
                 throw new Exception($"Python execution error: {errors}");
             }
 
-            var response = JsonSerializer.Deserialize<PythonResponse>(output);
-
-            if (!string.IsNullOrEmpty(response.Error))
-            {
-                throw new Exception($"Python script error: {response.Error}");
-            }
-
-            return response.Answer;
+            return output.Trim();
         }
 
         public static async Task EmbedAndStoreDocumentAsync(string scriptPath, string fileId)

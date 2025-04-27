@@ -24,7 +24,7 @@ namespace nBanks.Application.Documents
 
         public async Task<List<DocumentDTO>> GetDocumentsByUserIdAsync(string userId)
         {
-            var documents = await _documentRepository.GetDocumentsByUserIdAsync(userId);
+            var documents = await _documentRepository.GetDocumentByUserIdAsync(userId);
             return documents.Select(DocumentMapper.ToDTO).ToList();
         }
 
