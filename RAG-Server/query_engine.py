@@ -4,8 +4,8 @@ from langchain_openai import OpenAI
 from dotenv import load_dotenv
 from langchain_community.vectorstores import Qdrant
 from langchain_openai import OpenAIEmbeddings
-from langchain_qdrant import Qdrant
 from qdrant_client import QdrantClient
+
 
 load_dotenv()
 

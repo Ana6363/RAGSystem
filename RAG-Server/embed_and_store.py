@@ -4,43 +4,57 @@ from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_openai import OpenAIEmbeddings
 from langchain_community.vectorstores import Qdrant
+from pymongo import MongoClient
+import sys
+from bson import ObjectId
+from langchain.schema import Document as LangDocument
+
 
 load_dotenv()
 
+# MongoDB
+MONGO_URI = os.getenv("MONGO_URI")
+DB_NAME = os.getenv("MONGO_DB_NAME", "nBanksUsers")
+PDF_FOLDER = os.getenv("PDF_FOLDER", "./temp_pdfs")
+
+# Qdrant
 QDRANT_URL = os.getenv("QDRANT_URL")
 QDRANT_API_KEY = os.getenv("QDRANT_API_KEY")
 QDRANT_COLLECTION = os.getenv("QDRANT_COLLECTION", "nbanks_documents")
-PDF_FOLDER = os.getenv("PDF_FOLDER", "./pdfs")
+COLLECTION_NAME = "Documents"
+
+# OpenAI
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
-
 def embed_and_store(file_id: str):
-    file_path = os.path.join(PDF_FOLDER, f"{file_id}.pdf") # Construct the full path to the PDF file(file_id + PDF_FOLDER from .env)
-    
-    if not os.path.exists(file_path):
-        raise FileNotFoundError(f"File not found: {file_path}")
+    # Connect to MongoDB
+    client = MongoClient(MONGO_URI)
+    db = client[DB_NAME]
+    documents_collection = db[COLLECTION_NAME]
 
-    # Load the PDF file - this will read the content of the PDF and convert it into a format that can be processed by LangChain.
-    # The loader will extract text from the PDF and create a list of documents.
-    loader = PyPDFLoader(file_path)
-    docs = loader.load()
+    # Find document by file_id
+    document = documents_collection.find_one({"_id": ObjectId(file_id)})
+    if not document:
+        raise FileNotFoundError(f"No document found in MongoDB with id: {file_id}")
+
+    print(f"✅ Found document with ID {file_id} in MongoDB.")
+
+    # Get the extracted text (raw)
+    text_content = document["content"]["ContentValue"]
+
+    # Create a LangChain Document from text
+    lang_doc = LangDocument(page_content=text_content, metadata={"file_id": file_id})
 
     # Split the text into manageable chunks
-    # 100 characters of overlap between adjacent chunks
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100)
-    chunks = text_splitter.split_documents(docs)
+    chunks = text_splitter.split_documents([lang_doc])
 
-    # Adds file_id to each chunk so later we can filter search results to just this PDF
-    for chunk in chunks:
-        chunk.metadata["file_id"] = file_id
+    print(f"📄 Split text into {len(chunks)} chunks")
 
-    print(f"📄 Split PDF into {len(chunks)} chunks")
-
-    # Creates embeddings (vectors) for the text using OpenAI’s model
+    # Create embeddings
     embeddings = OpenAIEmbeddings(api_key=OPENAI_API_KEY)
 
-    # Sends the chunks + their vectors to Qdrant Cloud collection.
-    # They’re now stored, searchable, and ready to be queried later!
+    # Upload to Qdrant
     vectorstore = Qdrant.from_documents(
         documents=chunks,
         embedding=embeddings,
@@ -51,16 +65,11 @@ def embed_and_store(file_id: str):
 
     print(f"✅ Embedded and stored {len(chunks)} chunks in Qdrant Cloud!")
 
-"""
-# Example usage
+# Entry point when called from .NET
 if __name__ == "__main__":
-    embed_and_store("mock_document_1")
-    embed_and_store("mock_document_2")
-    embed_and_store("mock_document_3")
-"""
+    if len(sys.argv) < 2:
+        print("Usage: python embed_and_store.py <file_id>")
+        sys.exit(1)
 
-# Main function to handle file processing
-if __name__ == "__main__":
-    import sys
-    file_id = sys.argv[1]  # Get the file_id passed from the .NET app
+    file_id = sys.argv[1]
     embed_and_store(file_id)

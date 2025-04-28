@@ -43,7 +43,7 @@ namespace nBanks.Controllers
                 }
 
                 var result = await _documentService.UploadAndProcessDocumentAsync(
-                    request.File, request.UserId, _openAiService);
+                    request.File, request.UserId);
 
                 return Ok(result);
             }

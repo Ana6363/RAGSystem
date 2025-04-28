@@ -52,8 +52,9 @@ namespace nBanks.Application.Documents
                 await _documentRepository.AddDocumentAsync(document);
 
                 // Call the new method to run the embed_and_store script with the file ID
-                var fileId = document.fileName.ToString();
-                string pythonScriptPath = Path.Combine(Directory.GetCurrentDirectory(), "RAG-Server", "embed_and_store.py");
+                var fileId = document.Id;
+                string relativePath = "../RAG-Server/embed_and_store.py";
+                string pythonScriptPath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), relativePath));
 
                 await PythonRunner.EmbedAndStoreDocumentAsync(pythonScriptPath, fileId);
 
@@ -61,13 +62,16 @@ namespace nBanks.Application.Documents
             }
             catch (Exception ex)
             {
+                Console.WriteLine("EXCEPTION MESSAGE: " + ex.Message);
+                Console.WriteLine("INNER EXCEPTION: " + ex.InnerException?.Message);
                 throw new InvalidOperationException("Error adding document to the database.", ex);
             }
+
         }
 
 
 
-        public async Task<DocumentDTO> UploadAndProcessDocumentAsync(IFormFile file, string userId, OpenAIService openAiService)
+        public async Task<DocumentDTO> UploadAndProcessDocumentAsync(IFormFile file, string userId)
         {
             if (file == null || file.Length == 0)
                 throw new ArgumentException("File is empty.", nameof(file));
@@ -93,11 +97,9 @@ namespace nBanks.Application.Documents
                 rawContent = await reader.ReadToEndAsync();
             }
 
-            var openAiResponse = await openAiService.AskChatAsync(
-                $"Extract relevant content from this document:\n\n{rawContent}");
 
             var documentDto = new DocumentDTO(
-                content: openAiResponse,
+                content: rawContent,  // Save raw extracted text instead
                 fileName: file.FileName,
                 userId: userId
             );

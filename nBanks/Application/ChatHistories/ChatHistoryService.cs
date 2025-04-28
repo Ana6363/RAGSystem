@@ -120,7 +120,7 @@ namespace nBanks.Application.ChatHistories
                 throw new Exception("No documents found for the user.");
             }
 
-            string scriptPath = Path.Combine(Directory.GetCurrentDirectory(), "RAG-Server", "query_engine.py");
+            string scriptPath = "../RAG-Server/query_engine.py";
 
             var answer = await PythonRunner.RunPythonScriptAsync(scriptPath, fileIds, question);
 
