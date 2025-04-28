@@ -34,10 +34,13 @@ namespace nBanks.Application.Documents
             var dto = new DocumentDTO(documentDTO.Content, documentDTO.FileName, documentDTO.UserId);
             var document = DocumentMapper.ToDomain(documentDTO);
 
-            if (await _documentRepository.GetDocumentByNameAsync(document.fileName.ToString()) != null)
+            var userDocuments = await _documentRepository.GetDocumentByUserIdAsync(document.UserId);
+
+            if (userDocuments != null && userDocuments.Any(d => d.fileName.ToString() == document.fileName.ToString()))
             {
-                throw new InvalidOperationException("Document with this name already exists.");
+                throw new InvalidOperationException("Document with this name already exists for this user.");
             }
+
 
             if (document == null)
             {
@@ -50,9 +53,8 @@ namespace nBanks.Application.Documents
 
                 // Call the new method to run the embed_and_store script with the file ID
                 var fileId = document.fileName.ToString();
-                string pythonScriptPath =  Path.Combine(Directory.GetCurrentDirectory(), "RAG-Server", "embed_and_store.py");
+                string pythonScriptPath = Path.Combine(Directory.GetCurrentDirectory(), "RAG-Server", "embed_and_store.py");
 
-                // Call the new PythonRunner method to process the document
                 await PythonRunner.EmbedAndStoreDocumentAsync(pythonScriptPath, fileId);
 
                 return DocumentMapper.ToDTO(document);
