@@ -45,6 +45,20 @@ namespace nBanks.Controllers
                 var result = await _documentService.UploadAndProcessDocumentAsync(
                     request.File, request.UserId);
 
+                var fileId = result.Id; // This must be the MongoDB _id as string
+
+                using (var httpClient = new HttpClient())
+                {
+                    var ragUrl = $"http://localhost:8000/embed?file_id={fileId}";
+
+                    var response = await httpClient.PostAsync(ragUrl, null);
+
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        Console.WriteLine($"Failed to notify RAG server. Status: {response.StatusCode}");
+                    }
+                }
+
                 return Ok(result);
             }
             catch (Exception ex)
@@ -52,6 +66,7 @@ namespace nBanks.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
 
         [HttpDelete("delete")]
         public async Task<IActionResult> DeleteDocumentAsync(string name)

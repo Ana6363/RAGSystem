@@ -51,22 +51,12 @@ namespace nBanks.Application.Documents
             {
                 await _documentRepository.AddDocumentAsync(document);
 
-                // Call the new method to run the embed_and_store script with the file ID
-                var fileId = document.Id;
-                string relativePath = "../RAG-Server/embed_and_store.py";
-                string pythonScriptPath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), relativePath));
-
-                await PythonRunner.EmbedAndStoreDocumentAsync(pythonScriptPath, fileId);
-
                 return DocumentMapper.ToDTO(document);
             }
             catch (Exception ex)
             {
-                Console.WriteLine("EXCEPTION MESSAGE: " + ex.Message);
-                Console.WriteLine("INNER EXCEPTION: " + ex.InnerException?.Message);
                 throw new InvalidOperationException("Error adding document to the database.", ex);
             }
-
         }
 
 

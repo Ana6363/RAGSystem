@@ -102,46 +102,5 @@ namespace nBanks.Application.ChatHistories
             }
         }
 
-        public async Task<string> AskQuestionAndStoreAsync(string chatHistoryId, string question)
-        {
-            var existingChatHistory = await _chatHistoryRepository.GetChatHistoryByIdAsync(chatHistoryId);
-            if (existingChatHistory == null)
-            {
-                throw new Exception("Chat history not found.");
-            }
-
-            string userId = existingChatHistory.UserId;
-
-            var documents = await _documentService.GetDocumentsByUserIdAsync(userId);
-            var fileIds = documents?.Select(d => d.Id).ToList() ?? new List<string>();
-
-            if (fileIds.Count == 0)
-            {
-                throw new Exception("No documents found for the user.");
-            }
-
-            string scriptPath = "../RAG-Server/query_engine.py";
-
-            var answer = await PythonRunner.RunPythonScriptAsync(scriptPath, fileIds, question);
-
-            if (string.IsNullOrWhiteSpace(answer))
-            {
-                throw new Exception("No answer received from the Python script.");
-            }
-
-            var updateDTO = new ChatHistoryDTO(
-                userId, 
-                new List<string> { question },
-                new List<string> { answer },  
-                chatHistoryId           
-            );
-
-
-            await UpdateChatHistory(updateDTO);
-
-            return answer;
-        }
-
-
     }
 }
