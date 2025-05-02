@@ -12,16 +12,18 @@ namespace Domain.Models.ChatHistories
         [BsonRepresentation(BsonType.ObjectId)]
         public string UserId { get; set; }
 
-        public List<Question> Questions { get; set; } = new();
-        public List<Answer> Answers { get; set; } = new();
+        public List<string> FileIds { get; set; } = new();
+
+        public List<ChatMessage> Messages { get; set; } = new();
+
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public ChatHistory() { }
 
-        public ChatHistory(string userId, List<Question>? questions = null, List<Answer>? answers = null)
+        public ChatHistory(string userId, List<string>? fileIds = null)
         {
             UserId = userId;
-            Questions = questions ?? new List<Question>();
-            Answers = answers ?? new List<Answer>();
+            FileIds = fileIds ?? new List<string>();
         }
     }
 }

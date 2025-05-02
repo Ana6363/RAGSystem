@@ -1,18 +1,24 @@
-﻿namespace nBanks.Application.ChatHistories
+﻿using Domain.Models.ChatHistories;
+
+namespace nBanks.Application.ChatHistories
 {
     public class ChatHistoryDTO
     {
         public string? Id { get; set; }
         public string UserId { get; set; }
-        public List<string> Questions { get; set; } = new();
-        public List<string> Answers { get; set; } = new();
+        public List<string> FileIds { get; set; } = new();
+        public List<ChatMessage> Messages { get; set; } = new();
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        public ChatHistoryDTO(string userId, List<string>? questions = null, List<string>? answers = null, string? id = null)
+        public ChatHistoryDTO() { }
+
+        public ChatHistoryDTO(string userId, List<string>? fileIds = null, List<ChatMessage>? messages = null, string? id = null)
         {
             Id = id;
             UserId = userId;
-            Questions = questions ?? new List<string>();
-            Answers = answers ?? new List<string>();
+            FileIds = fileIds ?? new List<string>();
+            Messages = messages ?? new List<ChatMessage>();
+            CreatedAt = DateTime.UtcNow;
         }
     }
 }

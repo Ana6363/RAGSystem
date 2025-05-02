@@ -11,16 +11,14 @@ namespace nBanks.Application.ChatHistories
             if (chatHistory == null)
                 throw new ArgumentNullException(nameof(chatHistory), "Chat history cannot be null.");
 
-            // Map Questions and Answers to List<string>
-            var questions = chatHistory.Questions?.Select(q => q.QuestionValue).ToList() ?? new List<string>();
-            var answers = chatHistory.Answers?.Select(a => a.AnswerValue).ToList() ?? new List<string>();
-
-            return new ChatHistoryDTO(
-                chatHistory.UserId,
-                questions,
-                answers,
-                chatHistory.Id
-            );
+            return new ChatHistoryDTO
+            {
+                Id = chatHistory.Id,
+                UserId = chatHistory.UserId,
+                FileIds = chatHistory.FileIds ?? new List<string>(),
+                Messages = chatHistory.Messages ?? new List<ChatMessage>(),
+                CreatedAt = chatHistory.CreatedAt
+            };
         }
 
         public static ChatHistory MapToDomain(ChatHistoryDTO chatHistoryDTO)
@@ -28,12 +26,14 @@ namespace nBanks.Application.ChatHistories
             if (chatHistoryDTO == null)
                 throw new ArgumentNullException(nameof(chatHistoryDTO), "Chat history DTO cannot be null.");
 
-            var questions = chatHistoryDTO.Questions?.Select(q => new Question(q)).ToList() ?? new List<Question>();
-            var answers = chatHistoryDTO.Answers?.Select(a => new Answer(a)).ToList() ?? new List<Answer>();
-
-            var userId = chatHistoryDTO.UserId;
-            var chatHistory = new ChatHistory(userId, questions, answers);
-            chatHistory.Id = chatHistoryDTO.Id ?? ObjectId.GenerateNewId().ToString();
+            var chatHistory = new ChatHistory
+            {
+                Id = chatHistoryDTO.Id ?? ObjectId.GenerateNewId().ToString(),
+                UserId = chatHistoryDTO.UserId,
+                FileIds = chatHistoryDTO.FileIds ?? new List<string>(),
+                Messages = chatHistoryDTO.Messages ?? new List<ChatMessage>(),
+                CreatedAt = chatHistoryDTO.CreatedAt
+            };
 
             return chatHistory;
         }

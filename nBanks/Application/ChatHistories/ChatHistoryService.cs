@@ -33,15 +33,7 @@ namespace nBanks.Application.ChatHistories
 
         public async Task<ChatHistoryDTO> AddChatHistory(ChatHistoryDTO chatHistoryDTO)
         {
-            chatHistoryDTO.Questions ??= new List<string>();
-            chatHistoryDTO.Answers ??= new List<string>();
-
             var chatHistory = ChatHistoryMapper.MapToDomain(chatHistoryDTO);
-
-            if (await _chatHistoryRepository.GetChatHistoryByUserIdAsync(chatHistory.UserId) != null)
-            {
-                throw new Exception("Chat history already exists for this user.");
-            }
 
             try
             {
@@ -63,22 +55,13 @@ namespace nBanks.Application.ChatHistories
             if (existingChatHistory == null)
                 throw new Exception("Chat history not found.");
 
-            if (chatHistoryDTO.Questions == null || chatHistoryDTO.Questions.Count == 0 ||
-                chatHistoryDTO.Answers == null || chatHistoryDTO.Answers.Count == 0)
+            if (chatHistoryDTO.Messages != null && chatHistoryDTO.Messages.Count > 0)
             {
-                throw new ArgumentException("Update must include at least one new question and one new answer.");
-            }
-
-            foreach (var question in chatHistoryDTO.Questions)
-            {
-                if (!string.IsNullOrWhiteSpace(question))
-                    existingChatHistory.Questions.Add(new Question(question));
-            }
-
-            foreach (var answer in chatHistoryDTO.Answers)
-            {
-                if (!string.IsNullOrWhiteSpace(answer))
-                    existingChatHistory.Answers.Add(new Answer(answer));
+                foreach (var message in chatHistoryDTO.Messages)
+                {
+                    if (!string.IsNullOrWhiteSpace(message.Content))
+                        existingChatHistory.Messages.Add(message);
+                }
             }
 
             await _chatHistoryRepository.UpdateChatHistoryAsync(existingChatHistory);
