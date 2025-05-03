@@ -77,6 +77,24 @@ namespace nBanks.Controllers
             }
         }
 
+        [HttpPost("ask")]
+        public async Task<IActionResult> AskQuestion([FromBody] AskQuestionDTO dto)
+        {
+            if (dto == null || string.IsNullOrWhiteSpace(dto.ChatId) || string.IsNullOrWhiteSpace(dto.Question))
+            {
+                return BadRequest(new { message = "ChatId and Question are required." });
+            }
+
+            try
+            {
+                var lastMessages = await _chatHistoryService.AskQuestionAsync(dto.ChatId, dto.Question);
+                return Ok(lastMessages); 
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
 
     }
 }

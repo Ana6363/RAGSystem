@@ -11,6 +11,8 @@ using nBanks.Application.Documents;
 using Domain.Models.ChatHistories;
 using Infrastructure.Mongo.ChatHistories;
 using nBanks.Application.ChatHistories;
+using Domain.Models.RagServer;
+using Infrastructure.RagServer;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -47,6 +49,8 @@ builder.Services.AddScoped<DocumentService>();
 
 builder.Services.AddScoped<IChatHistoryRepository, ChatHistoryRepository>();
 builder.Services.AddScoped<ChatHistoryService>();
+
+builder.Services.AddHttpClient<IRagServerRepository, RagServerRepository>();
 
 var app = builder.Build();
 

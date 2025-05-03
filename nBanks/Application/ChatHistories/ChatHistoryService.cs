@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Domain.Models.ChatHistories;
 using nBanks.Application.Documents;
 using nBanks.Application;
+using Domain.Models.RagServer;
 
 namespace nBanks.Application.ChatHistories
 {
@@ -13,11 +14,17 @@ namespace nBanks.Application.ChatHistories
         private readonly IChatHistoryRepository _chatHistoryRepository;
         private readonly DocumentService _documentService;
 
-        public ChatHistoryService(IChatHistoryRepository chatHistoryRepository, DocumentService documentService)
+        private readonly IRagServerRepository _ragServerRepository;
+
+        public ChatHistoryService(IChatHistoryRepository chatHistoryRepository, 
+                                DocumentService documentService,
+                                IRagServerRepository ragServerRepository)
         {
             _chatHistoryRepository = chatHistoryRepository;
             _documentService = documentService;
+            _ragServerRepository = ragServerRepository;
         }
+
 
         public async Task<ChatHistoryDTO> GetChatHistoryById(string id)
         {
@@ -83,6 +90,51 @@ namespace nBanks.Application.ChatHistories
             {
                 throw new Exception("Error deleting chat history: " + ex.Message);
             }
+        }
+
+        public async Task<List<ChatMessage>> AskQuestionAsync(string chatId, string question)
+        {
+            var chat = await _chatHistoryRepository.GetChatHistoryByIdAsync(chatId);
+            if (chat == null)
+            {
+                throw new Exception("Chat history not found.");
+            }
+
+            chat.Messages.Add(new ChatMessage
+            {
+                Role = "user",
+                Content = question,
+                Timestamp = DateTime.UtcNow
+            });
+
+            string answer;
+            try
+            {
+                answer = await _ragServerRepository.QueryAsync(chat.FileIds, question);
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to get answer from RAG server: {ex.Message}");
+            }
+
+            chat.Messages.Add(new ChatMessage
+            {
+                Role = "assistant",
+                Content = answer,
+                Timestamp = DateTime.UtcNow
+            });
+
+            await _chatHistoryRepository.UpdateChatHistoryAsync(chat);
+
+            var lastTwoMessages = chat.Messages
+                .OrderByDescending(m => m.Timestamp)
+                .Take(2)
+                .OrderBy(m => m.Timestamp)
+                .ToList();
+
+            return lastTwoMessages;
+
         }
 
     }
