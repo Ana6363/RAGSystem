@@ -16,6 +16,10 @@ namespace nBanks.Application.Documents
             _documentRepository = documentRepository;
         }
 
+        public DocumentService(){
+            
+        }
+
         public async Task<DocumentDTO?> GetDocumentByNameAsync(string id)
         {
             var document = await _documentRepository.GetDocumentByNameAsync(id);

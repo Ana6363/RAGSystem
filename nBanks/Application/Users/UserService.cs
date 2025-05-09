@@ -27,8 +27,14 @@ namespace nBanks.Application.Users
 
         public async Task<UserDTO> AddUserAsync(UserDTO userDTO)
         {
+            if (userDTO == null)
+            {
+                throw new ArgumentNullException(nameof(userDTO));
+            }
             var dto = new UserDTO(userDTO.VATNumber);
             var user = UserMapper.ToDomain(userDTO);
+
+            
 
             if (await _userRepository.GetUserByVATNumberAsync(user.VATNumber.ToString()) != null)
             {
