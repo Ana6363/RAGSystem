@@ -137,5 +137,22 @@ namespace nBanks.Application.ChatHistories
 
         }
 
+        public async Task AttachFileAsync(string chatId, string fileId)
+        {
+            var chat = await _chatHistoryRepository.GetChatHistoryByIdAsync(chatId);
+            if (chat == null)
+            {
+                throw new Exception("Chat history not found.");
+            }
+
+            if (!chat.FileIds.Contains(fileId))
+            {
+                chat.FileIds.Add(fileId);
+                await _chatHistoryRepository.UpdateChatHistoryAsync(chat);
+            }
+        }
+
+
+
     }
 }

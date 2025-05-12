@@ -3,6 +3,7 @@ using Infrastructure.Mongo;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using nBanks.Application.ChatHistories;
+using nBanks.Application.Documents;
 
 namespace nBanks.Controllers
 {
@@ -11,6 +12,7 @@ namespace nBanks.Controllers
     public class ChatHistoryController : ControllerBase
     {
         private readonly ChatHistoryService _chatHistoryService;
+        private readonly DocumentService _documentService;
 
         public ChatHistoryController(ChatHistoryService context)
         {
@@ -95,6 +97,26 @@ namespace nBanks.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+        [HttpPut("updateFile")]
+        public async Task<IActionResult> UpdateFileAsync(string chatId, [FromBody] string fileId)
+        {
+            if (string.IsNullOrWhiteSpace(chatId) || string.IsNullOrWhiteSpace(fileId))
+            {
+                return BadRequest(new { message = "ChatId and FileId are required." });
+            }
+
+            try
+            {
+                await _chatHistoryService.AttachFileAsync(chatId, fileId);
+                return Ok(new { message = "File attached to chat successfully." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
 
     }
 }
