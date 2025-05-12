@@ -7,6 +7,7 @@ namespace Application.Users
         public string VATNumber { get; set; }
         public string? Id { get; set; }
 
+        public UserDTO() { }
         public UserDTO(string vatNumber, string? id = null)
         {
             if (string.IsNullOrWhiteSpace(vatNumber))
