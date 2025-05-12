@@ -151,5 +151,75 @@ namespace Tests.ChatHistories
             Assert.Equal("user", messages[0].Role);
             Assert.Equal("assistant", messages[1].Role);
         }
+
+        [Fact]
+        public async Task GetAllChatHistories_ShouldReturnList_WhenFound()
+        {
+            // Arrange
+            var chats = new List<ChatHistory>
+            {
+                new ChatHistory("user1") { Id = "chat1" },
+                new ChatHistory("user1") { Id = "chat2" }
+            };
+
+            _chatHistoryRepoMock.Setup(repo => repo.GetAllChatHistoriesAsync("user1"))
+                .ReturnsAsync(chats);
+
+            // Act
+            var result = await _chatHistoryService.GetAllChatHistories("user1");
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(2, result.Count);
+            Assert.All(result, dto => Assert.Equal("user1", dto.UserId));
+        }
+
+        [Fact]
+        public async Task AttachFileAsync_ShouldAddFileId_WhenNotAlreadyAttached()
+        {
+            // Arrange
+            var chat = new ChatHistory("user1") { Id = "chat123", FileIds = new List<string>() };
+
+            _chatHistoryRepoMock.Setup(r => r.GetChatHistoryByIdAsync("chat123"))
+                .ReturnsAsync(chat);
+
+            _chatHistoryRepoMock.Setup(r => r.UpdateChatHistoryAsync(It.IsAny<ChatHistory>()))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await _chatHistoryService.AttachFileAsync("chat123", "file123");
+
+            // Assert
+            _chatHistoryRepoMock.Verify(r => r.UpdateChatHistoryAsync(It.Is<ChatHistory>(
+                c => c.FileIds.Contains("file123"))), Times.Once);
+        }
+
+        [Fact]
+        public async Task AttachFileAsync_ShouldNotAddFileId_WhenAlreadyAttached()
+        {
+            // Arrange
+            var chat = new ChatHistory("user1") { Id = "chat123", FileIds = new List<string> { "file123" } };
+
+            _chatHistoryRepoMock.Setup(r => r.GetChatHistoryByIdAsync("chat123"))
+                .ReturnsAsync(chat);
+
+            // Act
+            await _chatHistoryService.AttachFileAsync("chat123", "file123");
+
+            // Assert
+            _chatHistoryRepoMock.Verify(r => r.UpdateChatHistoryAsync(It.IsAny<ChatHistory>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task AttachFileAsync_ShouldThrowException_WhenChatNotFound()
+        {
+            // Arrange
+            _chatHistoryRepoMock.Setup(r => r.GetChatHistoryByIdAsync("chat123"))
+                .ReturnsAsync((ChatHistory)null!);
+
+            // Act & Assert
+            await Assert.ThrowsAsync<Exception>(() => _chatHistoryService.AttachFileAsync("chat123", "file123"));
+        }
+
     }
 }
