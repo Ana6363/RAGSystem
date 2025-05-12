@@ -14,20 +14,24 @@ namespace Domain.Models
         public string UserId { get; set; }
 
         public Content content { get; set; }
-        public FileName fileName { get; set; }
+        public FileName FileName { get; set; }
+        public byte[]? FileData { get; set; }
 
         public Document() { }
 
-        public Document(string userId, FileName fileName, Content contentValue)
+        public Document(string userId, FileName fileName, Content contentValue, byte[]? fileData = null)
         {
             if (string.IsNullOrWhiteSpace(contentValue.ToString()))
                 throw new ArgumentException("Content cannot be null or empty.", nameof(contentValue));
-            this.content = contentValue;
-            UserId = userId;
             if (string.IsNullOrWhiteSpace(fileName.ToString()))
                 throw new ArgumentException("File name cannot be null or empty.", nameof(fileName));
-            this.fileName = fileName;
+
+            UserId = userId;
+            content = contentValue;
+            FileName = fileName;
+            FileData = fileData;
         }
+
 
     }
 }

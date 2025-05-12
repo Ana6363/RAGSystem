@@ -21,10 +21,10 @@ namespace nBanks.Controllers
             _openAiService = openAiService;
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetDocumentByNameAsync(string id)
+        [HttpGet("getByName")]
+        public async Task<IActionResult> GetDocumentByNameAsync(string name)
         {
-            var document = await _documentService.GetDocumentByNameAsync(id);
+            var document = await _documentService.GetDocumentByNameAsync(name);
             if (document == null)
             {
                 return NotFound();
@@ -86,7 +86,7 @@ namespace nBanks.Controllers
             }
         }
 
-        [HttpGet("user/{userId}")]
+        [HttpGet("userid")]
         public async Task<IActionResult> GetDocumentsByUserIdAsync(string userId)
         {
             try

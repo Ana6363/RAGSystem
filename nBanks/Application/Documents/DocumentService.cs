@@ -20,9 +20,9 @@ namespace nBanks.Application.Documents
             
         }
 
-        public async Task<DocumentDTO?> GetDocumentByNameAsync(string id)
+        public async Task<DocumentDTO?> GetDocumentByNameAsync(string name)
         {
-            var document = await _documentRepository.GetDocumentByNameAsync(id);
+            var document = await _documentRepository.GetDocumentByNameAsync(name);
             return document == null ? null : DocumentMapper.ToDTO(document);
         }
 
@@ -35,16 +35,7 @@ namespace nBanks.Application.Documents
 
         public async Task<DocumentDTO> AddDocumentAsync(DocumentDTO documentDTO)
         {
-            var dto = new DocumentDTO(documentDTO.Content, documentDTO.FileName, documentDTO.UserId);
             var document = DocumentMapper.ToDomain(documentDTO);
-
-            var userDocuments = await _documentRepository.GetDocumentByUserIdAsync(document.UserId);
-
-            if (userDocuments != null && userDocuments.Any(d => d.fileName.ToString() == document.fileName.ToString()))
-            {
-                throw new InvalidOperationException("Document with this name already exists for this user.");
-            }
-
 
             if (document == null)
             {
@@ -54,7 +45,6 @@ namespace nBanks.Application.Documents
             try
             {
                 await _documentRepository.AddDocumentAsync(document);
-
                 return DocumentMapper.ToDTO(document);
             }
             catch (Exception ex)
@@ -64,7 +54,6 @@ namespace nBanks.Application.Documents
         }
 
 
-
         public async Task<DocumentDTO> UploadAndProcessDocumentAsync(IFormFile file, string userId)
         {
             if (file == null || file.Length == 0)
@@ -72,10 +61,16 @@ namespace nBanks.Application.Documents
 
             string rawContent;
 
+            using var memoryStream = new MemoryStream();
+            await file.CopyToAsync(memoryStream);
+            var fileBytes = memoryStream.ToArray();
+
+            // Reset the stream for reading PDF/text
+            memoryStream.Position = 0;
+
             if (file.FileName.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
             {
-                using var pdfStream = file.OpenReadStream();
-                using var pdf = PdfDocument.Open(pdfStream);
+                using var pdf = PdfDocument.Open(memoryStream);
                 var builder = new StringBuilder();
 
                 foreach (Page page in pdf.GetPages())
@@ -87,19 +82,21 @@ namespace nBanks.Application.Documents
             }
             else
             {
-                using var reader = new StreamReader(file.OpenReadStream());
+                memoryStream.Position = 0;
+                using var reader = new StreamReader(memoryStream);
                 rawContent = await reader.ReadToEndAsync();
             }
 
-
             var documentDto = new DocumentDTO(
-                content: rawContent,  // Save raw extracted text instead
+                userId: userId,
                 fileName: file.FileName,
-                userId: userId
+                content: rawContent,
+                fileData: fileBytes // ✅ store original file
             );
 
             return await AddDocumentAsync(documentDto);
         }
+
 
 
         public async Task<DocumentDTO?> DeleteDocumentAsync(string name)
@@ -118,6 +115,13 @@ namespace nBanks.Application.Documents
                 throw new InvalidOperationException("Error deleting document from the database.", ex);
             }
             return DocumentMapper.ToDTO(document);
+        }
+
+        public async Task<List<DocumentDTO>?> GetDocumentByNameAndUserAsync(string name, string userId)
+        {
+            Console.WriteLine($"Name: {name}, UserId: {userId}");
+            var documents = await _documentRepository.GetDocumentByNameAndUserAsync(name, userId);
+            return documents == null ? null : documents.Select(DocumentMapper.ToDTO).ToList();
         }
     }
 }

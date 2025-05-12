@@ -9,18 +9,18 @@
         public string FileName { get; set; }
 
         public string Content { get; set; }
+        public byte[]? FileData { get; set; }
 
-        public DocumentDTO(string userId, string fileName, string content, string? id = null)
-
+        public DocumentDTO(string userId, string fileName, string content, string? id = null, byte[]? fileData = null)
         {
-            if (string.IsNullOrWhiteSpace(content)) 
+            if (string.IsNullOrWhiteSpace(content))
                 throw new ArgumentNullException(nameof(content), "Document content cannot be empty.");
 
+            UserId = userId;
             FileName = fileName;
             Content = content;
             Id = id;
-            UserId = userId;
+            FileData = fileData;
         }
-
     }
 }

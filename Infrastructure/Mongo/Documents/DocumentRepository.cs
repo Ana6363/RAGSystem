@@ -22,7 +22,7 @@ namespace Infrastructure.Mongo.Documents
 
         public async Task<Document?> GetDocumentByNameAsync(string name)
         {
-            return await _documents.Find(document => document.fileName.FileNameValue == name).FirstOrDefaultAsync();
+            return await _documents.Find(document => document.FileName.FileNameValue == name).FirstOrDefaultAsync();
         }
 
         public async Task<List<Document>?> GetDocumentByUserIdAsync(string userId)
@@ -40,6 +40,12 @@ namespace Infrastructure.Mongo.Documents
         {
             await _documents.DeleteOneAsync(document => document.Id == id);
         }
+
+        public async Task<List<Document>?> GetDocumentByNameAndUserAsync(string name, string userId)
+        {
+            return await _documents.Find(document => document.FileName.FileNameValue == name && document.UserId == userId).ToListAsync();
+        }
+
 
 
     }

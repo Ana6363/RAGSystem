@@ -152,6 +152,8 @@ namespace nBanks.Application.ChatHistories
             }
         }
 
+        
+
 
 
     }

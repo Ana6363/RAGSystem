@@ -14,10 +14,12 @@ namespace nBanks.Controllers
         private readonly ChatHistoryService _chatHistoryService;
         private readonly DocumentService _documentService;
 
-        public ChatHistoryController(ChatHistoryService context)
+        public ChatHistoryController(ChatHistoryService context, DocumentService documentService)
         {
             _chatHistoryService = context;
+            _documentService = documentService;
         }
+        
 
         [HttpPost("create")]
         public async Task<IActionResult> CreateAsync(ChatHistoryDTO dto)
@@ -110,6 +112,55 @@ namespace nBanks.Controllers
             {
                 await _chatHistoryService.AttachFileAsync(chatId, fileId);
                 return Ok(new { message = "File attached to chat successfully." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("preview")]
+        public async Task<IActionResult> PreviewFile(string chatId, string fileName)
+        {
+            Console.WriteLine($"chatId: {chatId}, fileName: {fileName}");
+
+            if (string.IsNullOrWhiteSpace(fileName) || string.IsNullOrWhiteSpace(chatId))
+            {
+                return BadRequest(new { message = "FileName and ChatId are required." });
+            }
+
+            try
+            {
+                var chat = await _chatHistoryService.GetChatHistoryById(chatId);
+                if (chat == null)
+                return NotFound(new { message = "Chat not found." });
+
+                Console.WriteLine($"chat.UserId: {chat.UserId}");
+                Console.WriteLine($"chat.FileIds: {(chat.FileIds == null ? "null" : string.Join(",", chat.FileIds))}");
+
+
+                var documents = await _documentService.GetDocumentByNameAndUserAsync(fileName, chat.UserId);
+
+                Console.WriteLine($"documents: {(documents == null ? "null" : string.Join(",", documents.Select(d => d.Id)))}");
+                if (documents == null || documents.Count == 0)
+                {
+                    return NotFound(new { message = "Document not found for this user." });
+                }
+
+                
+                var file = documents.FirstOrDefault(doc => chat.FileIds.Contains(doc.Id));
+                if (file == null)
+                {
+                    return NotFound(new { message = "File is not attached to this chat." });
+                }
+
+                if (file.FileData == null || file.FileData.Length == 0)
+                {
+                    return BadRequest(new { message = "Document found but has no file data." });
+                }
+
+                
+                return File(file.FileData, "application/pdf", file.FileName);
             }
             catch (Exception ex)
             {
