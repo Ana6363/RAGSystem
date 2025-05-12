@@ -36,7 +36,7 @@ namespace nBanks.Controllers
         }
 
 
-        [HttpGet("getByUser")]
+        [HttpGet("user")]
         public async Task<IActionResult> GetByUser(string userId)
         {
             var res = await _chatHistoryService.GetAllChatHistories(userId);
@@ -100,7 +100,7 @@ namespace nBanks.Controllers
             }
         }
 
-        [HttpPut("updateFile")]
+        [HttpPut("file")]
         public async Task<IActionResult> UpdateFileAsync(string chatId, [FromBody] string fileId)
         {
             if (string.IsNullOrWhiteSpace(chatId) || string.IsNullOrWhiteSpace(fileId))

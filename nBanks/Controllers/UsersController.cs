@@ -34,7 +34,7 @@ namespace nBanks.Controllers
 
         }
 
-        [HttpGet("getByVat")]
+        [HttpGet("vat")]
         public async Task<IActionResult> GetByVatNumberAsync(string vat)
         {
             var res = await _userService.GetUserByVATNumberAsync(vat);

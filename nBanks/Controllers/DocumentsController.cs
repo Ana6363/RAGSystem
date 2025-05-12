@@ -21,7 +21,7 @@ namespace nBanks.Controllers
             _openAiService = openAiService;
         }
 
-        [HttpGet("getByName")]
+        [HttpGet("name")]
         public async Task<IActionResult> GetDocumentByNameAsync(string name)
         {
             var document = await _documentService.GetDocumentByNameAsync(name);
