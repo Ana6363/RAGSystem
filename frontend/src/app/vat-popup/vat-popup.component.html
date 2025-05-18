@@ -1,0 +1,13 @@
+<div class="vat-popup" *ngIf="isVisible">
+    <div class="vat-header">
+      <span>Enter your VAT number</span>
+      <button class="close-btn" (click)="close()">×</button>
+    </div>
+  
+    <input [(ngModel)]="vat" placeholder="VAT Number" />
+    
+    <div class="vat-actions">
+      <button (click)="submitVat()">Submit</button>
+    </div>
+  </div>
+  
