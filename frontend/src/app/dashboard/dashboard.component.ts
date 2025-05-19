@@ -13,10 +13,15 @@ import { ChatTabsComponent } from '../chat-tabs/chat-tabs.component';
 
 export class DashboardComponent {
   vatNumber!: string;
+  currentFiles: string[] = [];
 
   constructor(private authService: AuthService, router: Router) {
     if (!authService.isLoggedIn()) router.navigate(['/']);
     this.vatNumber = authService.vatNumber;
+  }
+
+  onChatSelected(chat: any) {
+    this.currentFiles = chat?.fileIds ?? [];
   }
 }
 

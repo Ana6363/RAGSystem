@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { ChatHistoryService } from '../chat-history.service';
 import { CommonModule } from '@angular/common';
 import { NgFor, NgIf } from '@angular/common';
@@ -14,6 +14,7 @@ export class ChatTabsComponent implements OnInit {
   @Input() vat: string = '';
   chats: any[] = [];
   selected = 0;
+  @Output() selectedChat = new EventEmitter<any>();
 
   constructor(private chatService: ChatHistoryService) {}
 
@@ -32,6 +33,10 @@ export class ChatTabsComponent implements OnInit {
           next: (chats) => {
             console.log('Chats:', chats);
             this.chats = chats;
+
+            if (this.chats.length) {
+              this.selectedChat.emit(this.chats[0]);
+            }
           },
           error: (err) => {
             console.error('Error fetching chats:', err);
@@ -42,6 +47,11 @@ export class ChatTabsComponent implements OnInit {
         console.error('Error fetching user by VAT:', err);
       }
     });
+  }
+
+  choose(i: number) {
+    this.selected = i;
+    this.selectedChat.emit(this.chats[i]);
   }
   
 }
