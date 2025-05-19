@@ -34,7 +34,7 @@ namespace nBanks.Application.Users
             var dto = new UserDTO(userDTO.VATNumber);
             var user = UserMapper.ToDomain(userDTO);
 
-            
+
 
             if (await _userRepository.GetUserByVATNumberAsync(user.VATNumber.ToString()) != null)
             {

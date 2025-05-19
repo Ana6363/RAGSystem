@@ -12,4 +12,8 @@ export class UserService {
       params: { vat }
     });
   }
+
+  createUser(vat: string) {
+    return this.http.post(`${this.apiUrl}/create`, { VATNumber: vat.trim() });
+  }
 }

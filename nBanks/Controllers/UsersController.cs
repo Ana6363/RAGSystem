@@ -25,14 +25,29 @@ namespace nBanks.Controllers
         [HttpPost("create")]
         public async Task<IActionResult> CreateAsync(UserDTO userDTO)
         {
-            var res = await _userService.AddUserAsync(userDTO);
-            if (res == null)
+            try
             {
-                return BadRequest();
-            }
-            return Ok();
+                var res = await _userService.AddUserAsync(userDTO);
 
+                if (res == null)
+                {
+                    return BadRequest(new { message = "Could not create user." });
+                }
+
+                return Ok(res);
+            }
+            catch (InvalidOperationException ex)
+            {
+                // Handle known business logic error: duplicate VAT
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                // Let other errors bubble as 500
+                return StatusCode(500, new { message = "Unexpected error.", detail = ex.Message });
+            }
         }
+
 
         [HttpGet("vat")]
         public async Task<IActionResult> GetByVatNumberAsync(string vat)

@@ -1,13 +1,23 @@
 <div class="vat-popup" *ngIf="isVisible">
-    <div class="vat-header">
-      <span>Enter your VAT number</span>
-      <button class="close-btn" (click)="close()">×</button>
-    </div>
-  
-    <input [(ngModel)]="vat" placeholder="VAT Number" />
-    <div *ngIf="message" class="message">{{ message }}</div>
-    
-    <div class="vat-actions">
-      <button (click)="submitVat()">Submit</button>
-    </div>
+  <div class="vat-header">
+    <span>
+      {{ signUpMode ? 'Enter your VAT number to sign up'
+                    : 'Enter your VAT number' }}
+    </span>
+    <button class="close-btn" (click)="close()">×</button>
   </div>
+
+  <input [(ngModel)]="vat" placeholder="VAT Number" />
+
+  <div *ngIf="message" class="message">{{ message }}</div>
+
+  <div class="vat-actions">
+    <button (click)="submit()">Submit</button>
+  </div>
+
+  <a *ngIf="!signUpMode"
+     (click)="enableSignUp()"
+     class="signup-link">
+     Sign up
+  </a>
+</div>

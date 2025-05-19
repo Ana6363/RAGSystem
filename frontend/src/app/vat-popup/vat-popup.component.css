@@ -55,4 +55,16 @@
     font-weight: bold;
     color: #444;
   }
+
+  .signup-link {
+    display: block;
+    margin-top: 12px;
+    color: #1976d2;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  .signup-link:hover {
+    text-decoration: none;
+  }
+  
   
