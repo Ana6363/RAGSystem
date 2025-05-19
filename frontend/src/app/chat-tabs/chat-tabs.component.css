@@ -1,0 +1,10 @@
+/* styles.css */
+.nav-link.active {
+    font-weight: bold;
+    background-color: #e9ecef;
+  }
+  
+  .nav-link {
+    cursor: pointer;
+  }
+  

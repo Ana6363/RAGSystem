@@ -2,13 +2,21 @@ import { Injectable } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private isAuthenticated = false;
+  private _vatNumber: string | null = null;
 
-  setLoggedIn(status: boolean) {
-    this.isAuthenticated = status;
+  login(vat: string) {
+    this._vatNumber = vat;
+  }
+
+  logout() {
+    this._vatNumber = null;
   }
 
   isLoggedIn(): boolean {
-    return this.isAuthenticated;
+    return !!this._vatNumber;
+  }
+
+  get vatNumber(): string {
+    return this._vatNumber ?? '';
   }
 }

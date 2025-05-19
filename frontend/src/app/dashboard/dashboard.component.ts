@@ -2,17 +2,21 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
+import { ChatTabsComponent } from '../chat-tabs/chat-tabs.component';
 
 @Component({
   standalone: true,
   selector: 'app-dashboard',
-  imports: [CommonModule],
+  imports: [CommonModule, ChatTabsComponent],
   templateUrl: './dashboard.component.html'
 })
+
 export class DashboardComponent {
-  constructor(auth: AuthService, router: Router) {
-    if (!auth.isLoggedIn()) {
-      router.navigate(['/']);
-    }
+  vatNumber!: string;
+
+  constructor(private authService: AuthService, router: Router) {
+    if (!authService.isLoggedIn()) router.navigate(['/']);
+    this.vatNumber = authService.vatNumber;
   }
 }
+

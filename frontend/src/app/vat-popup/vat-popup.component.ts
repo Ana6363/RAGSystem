@@ -25,7 +25,6 @@ export class VatPopupComponent {
     private router: Router
   ) {}
 
-  /** Submit button handler – routes to correct action */
   submit(): void {
     if (!this.vat.trim()) return;
 
@@ -35,8 +34,9 @@ export class VatPopupComponent {
   private checkVat(): void {
     this.userService.checkVat(this.vat.trim()).subscribe({
       next: () => {
-        this.authService.setLoggedIn(true);
-        this.isVisible = false; 
+        // 👇 store the VAT in AuthService and go to dashboard
+        this.authService.login(this.vat);
+        this.isVisible = false;
         this.router.navigate(['/dashboard']);
       },
       error: () => {
@@ -44,20 +44,21 @@ export class VatPopupComponent {
       }
     });
   }
-
+  
   private createUser(): void {
-    this.userService.createUser(this.vat).subscribe({
+    this.userService.createUser(this.vat.trim()).subscribe({
       next: () => {
-        this.authService.setLoggedIn(true);
+        // 👇 same here for newly-created user
+        this.authService.login(this.vat);
         this.isVisible = false;
-        this.message = 'User created! Redirecting...';
-        setTimeout(() => this.router.navigate(['/dashboard']), 1000);
+        this.router.navigate(['/dashboard']);
       },
       error: (err) => {
         this.message = err.error?.message ?? 'Could not create user.';
       }
     });
   }
+  
 
   /** Switch to sign-up mode */
   enableSignUp(): void {
