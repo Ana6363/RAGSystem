@@ -1,21 +1,9 @@
-<!-- dashboard.component.html -->
 <div class="d-flex" style="min-height:100vh;background:white">
-  <!-- ▌ Sidebar (280 px, dark) -->
+  <!-- ▌ Sidebar -->
   <div class="d-flex flex-column p-3 text-bg-dark" style="width:280px">
     <h4 class="mb-4">Dashboard</h4>
 
-    <!-- existing dropdown -->
-    <div class="dropdown mb-4">
-      <button class="btn btn-secondary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown">
-        Menu
-      </button>
-      <ul class="dropdown-menu w-100">
-        <li><a class="dropdown-item" href="#">Option 1</a></li>
-        <li><a class="dropdown-item" href="#">Option 2</a></li>
-      </ul>
-    </div>
-
-    <!-- NEW ▸ files of the selected chat -->
+    <!-- Files of the selected chat -->
     <h6 class="text-uppercase text-white-50 mb-2">Files</h6>
     <ng-container *ngIf="currentFiles.length; else noFiles">
       <ul class="list-unstyled overflow-auto" style="max-height:60vh;">
@@ -30,11 +18,10 @@
     </ng-template>
   </div>
 
-  <!-- ▌ Main panel -->
+  <!-- ▌ Main panel/Chat part -->
   <div class="flex-grow-1 d-flex flex-column p-4">
-    <h1 class="mb-4">Welcome to the dashboard</h1>
+    <h1 class="fw-semibold mb-3">🗂️ Chats</h1>
 
-    <!-- chat tabs component (unchanged) -->
     <app-chat-tabs
       [vat]="vatNumber"
       (selectedChat)="onChatSelected($event)">

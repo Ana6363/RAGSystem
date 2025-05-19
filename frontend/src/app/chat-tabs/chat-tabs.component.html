@@ -1,4 +1,3 @@
-<h4 class="fw-semibold mb-3">🗂️ Chats</h4>
 
 <!-- horizontal tabs -->
 <ul class="nav nav-tabs mb-3" *ngIf="chats.length">
@@ -14,15 +13,24 @@
 
 <!-- chat content -->
 <div *ngIf="chats.length" class="border rounded p-4 bg-white">
-  <h5 class="mb-2">Chat {{ chats[selected].id }}</h5>
-  <p class="text-muted mb-3">
-    {{ chats[selected].messages?.[0]?.content || 'No messages yet.' }}
-  </p>
+  <h5 class="mb-3">Chat {{ chats[selected].id }}</h5>
 
+  <!-- List all messages -->
+  <div *ngIf="chats[selected].messages?.length; else noMessages">
+    <div
+      *ngFor="let msg of chats[selected].messages"
+      class="mb-3 pb-2 border-bottom">
+      <strong class="d-block text-capitalize">
+        {{ msg.role }}
+      </strong>
+      <p class="mb-0">{{ msg.content }}</p>
+    </div>
+  </div>
 
-  <ng-template #noFiles>
-    <p class="text-muted mb-0">No files attached.</p>
+  <ng-template #noMessages>
+    <p class="text-muted">No messages yet.</p>
   </ng-template>
 </div>
+
 
 <p *ngIf="!chats.length" class="text-muted">No chats available.</p>
