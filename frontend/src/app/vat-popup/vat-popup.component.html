@@ -5,9 +5,9 @@
     </div>
   
     <input [(ngModel)]="vat" placeholder="VAT Number" />
+    <div *ngIf="message" class="message">{{ message }}</div>
     
     <div class="vat-actions">
       <button (click)="submitVat()">Submit</button>
     </div>
   </div>
-  
