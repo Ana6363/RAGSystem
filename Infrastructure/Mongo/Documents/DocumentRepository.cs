@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Domain.Models;
 using Domain.Models.Documents;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace Infrastructure.Mongo.Documents
@@ -46,6 +47,11 @@ namespace Infrastructure.Mongo.Documents
             return await _documents.Find(document => document.FileName.FileNameValue == name && document.UserId == userId).ToListAsync();
         }
 
+        public async Task<List<Document>> GetDocumentsByIdsAsync(List<string> ids)
+        {
+            var filter = Builders<Document>.Filter.In(nameof(Document.Id), ids);
+            return await _documents.Find(filter).ToListAsync();
+        }
 
 
     }

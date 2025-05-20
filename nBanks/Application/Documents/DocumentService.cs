@@ -26,6 +26,12 @@ namespace nBanks.Application.Documents
             return document == null ? null : DocumentMapper.ToDTO(document);
         }
 
+       public async Task<List<DocumentDTO>> GetDocumentsByIdsAsync(List<string> ids)
+        {
+            var documents = await _documentRepository.GetDocumentsByIdsAsync(ids);
+            return documents.Select(DocumentMapper.ToDTO).ToList();
+        }
+
         public async Task<List<DocumentDTO>> GetDocumentsByUserIdAsync(string userId)
         {
             var documents = await _documentRepository.GetDocumentByUserIdAsync(userId);
@@ -91,7 +97,7 @@ namespace nBanks.Application.Documents
                 userId: userId,
                 fileName: file.FileName,
                 content: rawContent,
-                fileData: fileBytes // ✅ store original file
+                fileData: fileBytes
             );
 
             return await AddDocumentAsync(documentDto);

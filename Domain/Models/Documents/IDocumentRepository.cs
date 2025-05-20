@@ -13,5 +13,7 @@ namespace Domain.Models.Documents
         Task AddDocumentAsync(Document document);
         Task DeleteDocumentAsync(string id);
         Task<List<Document>?> GetDocumentByNameAndUserAsync(string name, string userId);
+        Task<List<Document>> GetDocumentsByIdsAsync(List<string> ids);
+
     }
 }

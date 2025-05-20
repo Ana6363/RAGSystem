@@ -104,5 +104,25 @@ namespace nBanks.Controllers
             }
         }
 
+        [HttpPost("by-ids")]
+        public async Task<IActionResult> GetDocumentsByIdsAsync([FromBody] List<string> ids)
+        {
+            try
+            {
+                var documents = await _documentService.GetDocumentsByIdsAsync(ids);
+                if (documents == null || documents.Count == 0)
+                {
+                    return NotFound(new { message = "No documents found for the given IDs." });
+                }
+
+                return Ok(documents);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+
     }
 }
