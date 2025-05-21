@@ -6,14 +6,13 @@
         href="javascript:void(0)"
         [class.active]="i === selected"
         (click)="choose(i)">
-      Chat {{ chat.id }}
+      {{ chat.title }}
     </a>
   </li>
 </ul>
 
 <!-- chat content -->
 <div *ngIf="chats.length" class="border rounded p-4 bg-white">
-  <h5 class="mb-3">Chat {{ chats[selected].id }}</h5>
 
   <!-- List all messages -->
   <div *ngIf="chats[selected].messages?.length; else noMessages">
