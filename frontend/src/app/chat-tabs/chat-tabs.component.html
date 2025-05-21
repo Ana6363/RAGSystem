@@ -1,3 +1,47 @@
+<!-- Confirmation Modal -->
+<div
+  class="modal fade"
+  id="confirmCloseModal"
+  tabindex="-1"
+  aria-labelledby="confirmCloseModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmCloseModalLabel">Confirm Close Chat</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to close this chat?
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          class="btn btn-danger"
+          id="confirmCloseBtn"
+          (click)="confirmClose()"
+        >
+          Yes, close chat
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <ul class="nav nav-tabs mb-3" *ngIf="chats.length">
   <li
     class="nav-item"
@@ -5,30 +49,30 @@
     style="position: relative; max-width: 300px;"
   >
       <a
-      href="javascript:void(0)"
-      class="nav-link d-flex align-items-center justify-content-between"
-      [class.active]="i === selected"
-      (click)="choose(i)"
-      style="
-        padding-right: 1rem;  /* more space for button */
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      "
-      title="{{ chat.title || ('Chat ' + chat.id) }}"
-    >
-      <span style="flex-grow: 1; overflow: hidden; text-overflow: ellipsis;">
-        {{ chat.title || ('Chat ' + chat.id) }}
-      </span>
+        href="javascript:void(0)"
+        class="nav-link d-flex align-items-center justify-content-between"
+        [class.active]="i === selected"
+        (click)="choose(i)"
+        style="
+          padding-right: 1rem;  /* more space for button */
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        "
+        title="{{ chat.title || ('Chat ' + chat.id) }}"
+      >
+        <span style="flex-grow: 1; overflow: hidden; text-overflow: ellipsis;">
+          {{ chat.title || ('Chat ' + chat.id) }}
+        </span>
 
-      <button
-        type="button"
-        class="btn-close"
-        aria-label="Close"
-        (click)="closeChat(i, $event)"
-        style="flex-shrink: 0; width: 1rem; height: 1rem; margin-left: 0.25rem;"
-      ></button>
-    </a>
+        <button
+          type="button"
+          class="btn-close"
+          aria-label="Close"
+          (click)="prepareToClose(i, $event)"
+          style="flex-shrink: 0; width: 1rem; height: 1rem; margin-left: 0.25rem;"
+        ></button>
+      </a>
 
   </li>
 </ul>

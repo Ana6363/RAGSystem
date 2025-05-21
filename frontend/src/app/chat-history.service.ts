@@ -21,8 +21,8 @@ export class ChatHistoryService {
   }
 
   deleteChatHistory(id: string): Observable<void> {
-    return this.http.delete<void>(`/api/chatHistories/delete?id=${id}`);
-  }
+    return this.http.delete<void>(`${this.baseUrl}/ChatHistory/delete?id=${id}`);
+  }  
   
 }
     

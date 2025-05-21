@@ -3,6 +3,8 @@ import { ChatHistoryService } from '../chat-history.service';
 import { CommonModule } from '@angular/common';
 import { NgFor, NgIf } from '@angular/common';
 
+declare const bootstrap: any;
+
 @Component({
   selector: 'app-chat-tabs',
   standalone: true,
@@ -15,6 +17,8 @@ export class ChatTabsComponent implements OnInit {
   chats: any[] = [];
   selected = 0;
   @Output() selectedChat = new EventEmitter<any>();
+  @Output() requestCloseChat = new EventEmitter<number>();
+  chatToCloseIndex: number | null = null;
 
   constructor(private chatService: ChatHistoryService) {}
 
@@ -54,31 +58,63 @@ export class ChatTabsComponent implements OnInit {
     this.selectedChat.emit(this.chats[i]);
   }
 
-  closeChat(index: number, event: MouseEvent): void {
+  requestClose(index: number, event: MouseEvent): void {
+    console.log('requestClose called');
     event.stopPropagation();
+    this.requestCloseChat.emit(index);
+  }
+
+  prepareToClose(index: number, event: MouseEvent) {
+    event.stopPropagation();
+    this.chatToCloseIndex = index;
   
-    const chatToDelete = this.chats[index];
-    if (!chatToDelete) return;
+    const modalElement = document.getElementById('confirmCloseModal');
+    if (modalElement) {
+      const modal = new bootstrap.Modal(modalElement);
+      modal.show();
+    }
+  }
+
+  confirmClose() {
+    console.log('confirmClose called');
+    if (this.chatToCloseIndex === null) return;
   
-    this.chatService.deleteChatHistory(chatToDelete.id).subscribe({
+    const chat = this.chats[this.chatToCloseIndex];
+    if (!chat) return;
+  
+    this.chatService.deleteChatHistory(chat.id).subscribe({
       next: () => {
-        this.chats.splice(index, 1);
+        this.closeChat(this.chatToCloseIndex!); // Remove chat locally after successful delete
+        this.chatToCloseIndex = null;
   
-        if (this.selected >= this.chats.length) {
-          this.selected = this.chats.length - 1;
-        }
-  
-        if (this.chats.length > 0) {
-          this.selectedChat.emit(this.chats[this.selected]);
-        } else {
-          this.selectedChat.emit(null);
+        const modalElement = document.getElementById('confirmCloseModal');
+        if (modalElement) {
+          const modalInstance = bootstrap.Modal.getInstance(modalElement);
+          modalInstance?.hide();
         }
       },
       error: (err) => {
         console.error('Failed to delete chat:', err);
+        // Optionally show error notification
       }
     });
-  }  
+  }
+  
+
+  closeChat(index: number) {
+    console.log('closeChat called');
+    this.chats.splice(index, 1);
+    if (this.selected >= this.chats.length) {
+      this.selected = this.chats.length - 1;
+    }
+    if (this.chats.length > 0) {
+      this.selectedChat.emit(this.chats[this.selected]);
+    } else {
+      this.selectedChat.emit(null);
+    }
+  }
+
+
   
   
 }
