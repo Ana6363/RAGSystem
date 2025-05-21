@@ -64,7 +64,12 @@ namespace nBanks.Application.ChatHistories
 
                 var prompt = $"Generate a concise, meaningful title for this chat based on the content of the first file:\n\n{fileContentSnippet}";
 
-                chatHistory.Title = await _openAIService.GenerateChatTitleAsync(prompt);
+                var rawTitle = await _openAIService.GenerateChatTitleAsync(prompt);
+
+                var title = rawTitle.Trim().Trim('"', '\'');
+
+                chatHistory.Title = title;
+
             }
 
             try
