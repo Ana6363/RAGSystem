@@ -60,5 +60,16 @@ namespace Infrastructure.OpenAI
             }
         }
 
+        public async Task<string> GenerateChatTitleAsync(string initialContent)
+        {
+            var prompt = $"Generate a concise, meaningful title for this chat based on:\n\n{initialContent}";
+
+            var response = await AskChatAsync(prompt);
+
+            var title = response?.Trim() ?? "New Chat";
+
+            return title;
+        }
+
     }
 }

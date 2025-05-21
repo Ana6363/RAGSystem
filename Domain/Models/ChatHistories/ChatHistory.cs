@@ -11,7 +11,7 @@ namespace Domain.Models.ChatHistories
 
         [BsonRepresentation(BsonType.ObjectId)]
         public string UserId { get; set; }
-
+        public string Title { get; set; } = string.Empty;
         public List<string> FileIds { get; set; } = new();
 
         public List<ChatMessage> Messages { get; set; } = new();

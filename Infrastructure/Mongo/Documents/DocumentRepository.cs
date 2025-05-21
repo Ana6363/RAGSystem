@@ -53,6 +53,10 @@ namespace Infrastructure.Mongo.Documents
             return await _documents.Find(filter).ToListAsync();
         }
 
+        public async Task<Document?> GetDocumentByIdAsync(string id)
+        {
+            return await _documents.Find(document => document.Id == id).FirstOrDefaultAsync();
+        }
 
     }
 }

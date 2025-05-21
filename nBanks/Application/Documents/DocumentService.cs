@@ -38,6 +38,12 @@ namespace nBanks.Application.Documents
             return documents.Select(DocumentMapper.ToDTO).ToList();
         }
 
+        public async Task<DocumentDTO?> GetDocumentByIdAsync(string id)
+        {
+            var document = await _documentRepository.GetDocumentByIdAsync(id);
+            return document == null ? null : DocumentMapper.ToDTO(document);
+        }
+
 
         public async Task<DocumentDTO> AddDocumentAsync(DocumentDTO documentDTO)
         {

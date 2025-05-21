@@ -17,7 +17,8 @@ namespace nBanks.Application.ChatHistories
                 UserId = chatHistory.UserId,
                 FileIds = chatHistory.FileIds ?? new List<string>(),
                 Messages = chatHistory.Messages ?? new List<ChatMessage>(),
-                CreatedAt = chatHistory.CreatedAt
+                CreatedAt = chatHistory.CreatedAt,
+                Title = chatHistory.Title ?? string.Empty
             };
         }
 
@@ -32,7 +33,8 @@ namespace nBanks.Application.ChatHistories
                 UserId = chatHistoryDTO.UserId,
                 FileIds = chatHistoryDTO.FileIds ?? new List<string>(),
                 Messages = chatHistoryDTO.Messages ?? new List<ChatMessage>(),
-                CreatedAt = chatHistoryDTO.CreatedAt
+                CreatedAt = chatHistoryDTO.CreatedAt,
+                Title = chatHistoryDTO.Title ?? string.Empty
             };
 
             return chatHistory;

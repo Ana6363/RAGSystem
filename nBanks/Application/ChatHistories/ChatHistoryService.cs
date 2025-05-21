@@ -6,6 +6,7 @@ using Domain.Models.ChatHistories;
 using nBanks.Application.Documents;
 using nBanks.Application;
 using Domain.Models.RagServer;
+using Infrastructure.OpenAI;
 
 namespace nBanks.Application.ChatHistories
 {
@@ -13,16 +14,19 @@ namespace nBanks.Application.ChatHistories
     {
         private readonly IChatHistoryRepository _chatHistoryRepository;
         private readonly DocumentService _documentService;
-
         private readonly IRagServerRepository _ragServerRepository;
+        private readonly OpenAIService _openAIService;
 
-        public ChatHistoryService(IChatHistoryRepository chatHistoryRepository, 
+
+        public ChatHistoryService(IChatHistoryRepository chatHistoryRepository,
                                 DocumentService documentService,
-                                IRagServerRepository ragServerRepository)
+                                IRagServerRepository ragServerRepository,
+                                OpenAIService openAIService)
         {
             _chatHistoryRepository = chatHistoryRepository;
             _documentService = documentService;
             _ragServerRepository = ragServerRepository;
+            _openAIService = openAIService;
         }
 
 
@@ -42,6 +46,27 @@ namespace nBanks.Application.ChatHistories
         {
             var chatHistory = ChatHistoryMapper.MapToDomain(chatHistoryDTO);
 
+            if (string.IsNullOrWhiteSpace(chatHistory.Title))
+            {
+                string fileContentSnippet = "";
+
+                if (chatHistory.FileIds != null && chatHistory.FileIds.Any())
+                {
+                    var firstFileId = chatHistory.FileIds.First();
+                    var document = await _documentService.GetDocumentByIdAsync(firstFileId);
+                    if (document != null)
+                    {
+                        fileContentSnippet = document.Content.Length > 500
+                            ? document.Content.Substring(0, 500)
+                            : document.Content;
+                    }
+                }
+
+                var prompt = $"Generate a concise, meaningful title for this chat based on the content of the first file:\n\n{fileContentSnippet}";
+
+                chatHistory.Title = await _openAIService.GenerateChatTitleAsync(prompt);
+            }
+
             try
             {
                 await _chatHistoryRepository.AddChatHistoryAsync(chatHistory);
@@ -52,6 +77,7 @@ namespace nBanks.Application.ChatHistories
                 throw new Exception("Error adding chat history: " + ex.Message);
             }
         }
+
 
         public async Task UpdateChatHistory(ChatHistoryDTO chatHistoryDTO)
         {
@@ -151,9 +177,6 @@ namespace nBanks.Application.ChatHistories
                 await _chatHistoryRepository.UpdateChatHistoryAsync(chat);
             }
         }
-
-        
-
 
 
     }
