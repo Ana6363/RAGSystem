@@ -53,5 +53,32 @@ export class ChatTabsComponent implements OnInit {
     this.selected = i;
     this.selectedChat.emit(this.chats[i]);
   }
+
+  closeChat(index: number, event: MouseEvent): void {
+    event.stopPropagation();
+  
+    const chatToDelete = this.chats[index];
+    if (!chatToDelete) return;
+  
+    this.chatService.deleteChatHistory(chatToDelete.id).subscribe({
+      next: () => {
+        this.chats.splice(index, 1);
+  
+        if (this.selected >= this.chats.length) {
+          this.selected = this.chats.length - 1;
+        }
+  
+        if (this.chats.length > 0) {
+          this.selectedChat.emit(this.chats[this.selected]);
+        } else {
+          this.selectedChat.emit(null);
+        }
+      },
+      error: (err) => {
+        console.error('Failed to delete chat:', err);
+      }
+    });
+  }  
+  
   
 }

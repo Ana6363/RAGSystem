@@ -1,13 +1,35 @@
-
-<!-- horizontal tabs -->
 <ul class="nav nav-tabs mb-3" *ngIf="chats.length">
-  <li class="nav-item" *ngFor="let chat of chats; index as i">
-    <a  class="nav-link"
-        href="javascript:void(0)"
-        [class.active]="i === selected"
-        (click)="choose(i)">
-      {{ chat.title }}
+  <li
+    class="nav-item"
+    *ngFor="let chat of chats; index as i"
+    style="position: relative; max-width: 300px;"
+  >
+      <a
+      href="javascript:void(0)"
+      class="nav-link d-flex align-items-center justify-content-between"
+      [class.active]="i === selected"
+      (click)="choose(i)"
+      style="
+        padding-right: 1rem;  /* more space for button */
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      "
+      title="{{ chat.title || ('Chat ' + chat.id) }}"
+    >
+      <span style="flex-grow: 1; overflow: hidden; text-overflow: ellipsis;">
+        {{ chat.title || ('Chat ' + chat.id) }}
+      </span>
+
+      <button
+        type="button"
+        class="btn-close"
+        aria-label="Close"
+        (click)="closeChat(i, $event)"
+        style="flex-shrink: 0; width: 1rem; height: 1rem; margin-left: 0.25rem;"
+      ></button>
     </a>
+
   </li>
 </ul>
 

@@ -32,11 +32,11 @@ export class DashboardComponent {
   
     this.documentService.getDocumentsByIds(ids).subscribe({
       next: (docs) => {
-        console.log('📦 Documents returned:', docs);
+        console.log('Documents returned:', docs);
         this.currentFiles = docs;
       },
       error: (err) => {
-        console.error('❌ Failed to load docs:', err);
+        console.error('Failed to load docs:', err);
         this.currentFiles = [];
       }
     });

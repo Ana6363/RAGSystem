@@ -5,6 +5,12 @@
   }
   
   .nav-link {
-    cursor: pointer;
+    padding-right: 1rem !important;
+  }
+  
+  .btn-close {
+    width: 0.4rem !important;
+    height: 0.4rem !important;
+    margin-left: 0.25rem;
   }
   
