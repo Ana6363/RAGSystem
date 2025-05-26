@@ -24,16 +24,22 @@ export class ChatHistoryService {
     return this.http.delete<void>(`${this.baseUrl}/ChatHistory/delete?id=${id}`);
   }  
 
-createChatHistory(dto: any) {
-  return this.http.post<any>(
-    `${this.baseUrl}/ChatHistory/create`,
-    dto,
-    { headers: { 'Content-Type': 'application/json' } }
-  );
+  createChatHistory(dto: any) {
+    return this.http.post<any>(
+      `${this.baseUrl}/ChatHistory/create`,
+      dto,
+      { headers: { 'Content-Type': 'application/json' } }
+    );
+  }
+
+  askQuestion(chatId: string, question: string) {
+  const body = {
+    chatId: chatId,
+    question: question
+  };
+  return this.http.post<any[]>(`${this.baseUrl}/ChatHistory/ask`, body, {
+    headers: { 'Content-Type': 'application/json' }
+  });
 }
 
-
-
-  
 }
-    

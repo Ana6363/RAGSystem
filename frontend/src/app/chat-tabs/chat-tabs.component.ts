@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { ChatHistoryService } from '../chat-history.service';
 import { CommonModule } from '@angular/common';
 import { NgFor, NgIf } from '@angular/common';
+import { FormsModule } from '@angular/forms';  // <-- import FormsModule
 
 declare const bootstrap: any;
 
@@ -10,7 +11,7 @@ declare const bootstrap: any;
   standalone: true,
   templateUrl: './chat-tabs.component.html',
   styleUrls: ['./chat-tabs.component.css'],
-  imports: [CommonModule, NgFor, NgIf]
+  imports: [CommonModule, NgFor, NgIf, FormsModule]  // <-- add FormsModule here
 })
 export class ChatTabsComponent implements OnInit {
   @Input() vat: string = '';
@@ -19,6 +20,8 @@ export class ChatTabsComponent implements OnInit {
   @Output() selectedChat = new EventEmitter<any>();
   @Output() requestCloseChat = new EventEmitter<number>();
   chatToCloseIndex: number | null = null;
+
+  newMessage: string = '';  // <-- track new message input
 
   constructor(private chatService: ChatHistoryService) {}
 
@@ -30,12 +33,10 @@ export class ChatTabsComponent implements OnInit {
   
     this.chatService.getUserByVat(this.vat).subscribe({
       next: (user) => {
-        console.log('User:', user);
         const userId = user.id;
   
         this.chatService.getChatHistories(userId).subscribe({
           next: (chats) => {
-            console.log('Chats:', chats);
             this.chats = chats;
 
             if (this.chats.length) {
@@ -59,7 +60,6 @@ export class ChatTabsComponent implements OnInit {
   }
 
   requestClose(index: number, event: MouseEvent): void {
-    console.log('requestClose called');
     event.stopPropagation();
     this.requestCloseChat.emit(index);
   }
@@ -76,7 +76,6 @@ export class ChatTabsComponent implements OnInit {
   }
 
   confirmClose() {
-    console.log('confirmClose called');
     if (this.chatToCloseIndex === null) return;
   
     const chat = this.chats[this.chatToCloseIndex];
@@ -95,14 +94,11 @@ export class ChatTabsComponent implements OnInit {
       },
       error: (err) => {
         console.error('Failed to delete chat:', err);
-        // Optionally show error notification
       }
     });
   }
   
-
   closeChat(index: number) {
-    console.log('closeChat called');
     this.chats.splice(index, 1);
     if (this.selected >= this.chats.length) {
       this.selected = this.chats.length - 1;
@@ -114,41 +110,66 @@ export class ChatTabsComponent implements OnInit {
     }
   }
 
- createNewChat() {
-  if (!this.vat) {
-    console.warn('No VAT provided, cannot create new chat.');
-    return;
+  createNewChat() {
+    if (!this.vat) {
+      console.warn('No VAT provided, cannot create new chat.');
+      return;
+    }
+
+    this.chatService.getUserByVat(this.vat).subscribe({
+      next: (user) => {
+        const userId = user.id;
+
+        const dto = {
+          userId: userId,
+          fileIds: [],
+          messages: [],
+          title: 'New Chat'
+        };
+
+        this.chatService.createChatHistory(dto).subscribe({
+          next: (newChat) => {
+            this.chats.push(newChat);
+            this.choose(this.chats.length - 1);
+          },
+          error: (err) => {
+            console.error('Failed to create new chat:', err);
+          }
+        });
+      },
+      error: (err) => {
+        console.error('Error fetching user by VAT:', err);
+      }
+    });
   }
 
-  this.chatService.getUserByVat(this.vat).subscribe({
-    next: (user) => {
-      const userId = user.id;
+sendMessage() {
+  if (!this.newMessage.trim()) return;
 
-      // Create a minimal DTO object
-      const dto = {
-        userId: userId,
-        fileIds: [],
-        messages: [],
-        title: 'New Chat'
-      };
+  const currentChat = this.chats[this.selected];
+  if (!currentChat.messages) currentChat.messages = [];
 
-      this.chatService.createChatHistory(dto).subscribe({
-        next: (newChat) => {
-          this.chats.push(newChat);
-          this.choose(this.chats.length - 1);
-        },
-        error: (err) => {
-          console.error('Failed to create new chat:', err);
-        }
-      });
+  // Add user message locally
+  currentChat.messages.push({
+    role: 'user',
+    content: this.newMessage.trim()
+  });
+
+  this.chatService.askQuestion(currentChat.id, this.newMessage.trim()).subscribe({
+    next: (messages) => {
+      // Only append assistant messages from backend
+      const assistantMessages = messages.filter(m => m.role === 'assistant');
+      currentChat.messages.push(...assistantMessages);
     },
     error: (err) => {
-      console.error('Error fetching user by VAT:', err);
+      console.error('Error sending message:', err);
     }
   });
+
+  this.newMessage = '';
 }
 
 
-  
-  
+
+
 }
