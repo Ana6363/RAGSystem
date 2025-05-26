@@ -114,6 +114,40 @@ export class ChatTabsComponent implements OnInit {
     }
   }
 
+ createNewChat() {
+  if (!this.vat) {
+    console.warn('No VAT provided, cannot create new chat.');
+    return;
+  }
+
+  this.chatService.getUserByVat(this.vat).subscribe({
+    next: (user) => {
+      const userId = user.id;
+
+      // Create a minimal DTO object
+      const dto = {
+        userId: userId,
+        fileIds: [],
+        messages: [],
+        title: 'New Chat'
+      };
+
+      this.chatService.createChatHistory(dto).subscribe({
+        next: (newChat) => {
+          this.chats.push(newChat);
+          this.choose(this.chats.length - 1);
+        },
+        error: (err) => {
+          console.error('Failed to create new chat:', err);
+        }
+      });
+    },
+    error: (err) => {
+      console.error('Error fetching user by VAT:', err);
+    }
+  });
+}
+
 
   
   

@@ -23,6 +23,17 @@ export class ChatHistoryService {
   deleteChatHistory(id: string): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/ChatHistory/delete?id=${id}`);
   }  
+
+createChatHistory(dto: any) {
+  return this.http.post<any>(
+    `${this.baseUrl}/ChatHistory/create`,
+    dto,
+    { headers: { 'Content-Type': 'application/json' } }
+  );
+}
+
+
+
   
 }
     
