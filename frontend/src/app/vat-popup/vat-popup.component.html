@@ -1,23 +1,64 @@
-<div class="vat-popup" *ngIf="isVisible">
-  <div class="vat-header">
-    <span>
-      {{ signUpMode ? 'Enter your VAT number to sign up'
-                    : 'Enter your VAT number' }}
-    </span>
-    <button class="close-btn" (click)="close()">×</button>
+<div *ngIf="isVisible" class="vh-100 vw-100 d-flex">
+  <!-- Left Side: Login Form -->
+  <div class="d-flex align-items-center justify-content-center bg-white p-5 w-100" style="max-width: 50%;">
+    <div class="w-100" style="max-width: 400px;">
+      <div class="mb-4 text-start">
+        <h2 class="fw-bold">
+          {{ signUpMode ? 'Create Account' : 'Welcome Back' }}
+        </h2>
+        <p class="text-muted small mb-0">
+          {{ signUpMode ? 'Sign up with your VAT number' : 'Login using your VAT number' }}
+        </p>
+      </div>
+
+      <form (ngSubmit)="submit()">
+        <div class="mb-3">
+          <label for="vatInput" class="form-label">VAT Number</label>
+          <input
+            id="vatInput"
+            type="text"
+            class="form-control form-control-lg"
+            placeholder="PT123456789"
+            [(ngModel)]="vat"
+            name="vat"
+            required
+          />
+        </div>
+
+        <div *ngIf="message" class="alert alert-warning small py-2 px-3" role="alert">
+          {{ message }}
+        </div>
+
+        <div class="d-grid mb-3">
+          <button type="submit" class="btn btn-primary btn-lg fw-semibold">
+            {{ signUpMode ? 'Sign Up' : 'Log In' }}
+          </button>
+        </div>
+      </form>
+
+      <div class="text-center small">
+        <span class="text-muted">
+          {{ signUpMode ? 'Already have an account?' : 'Don’t have an account?' }}
+        </span>
+        <button class="btn btn-link p-0 ms-1 text-decoration-none fw-medium" (click)="enableSignUp()">
+          {{ signUpMode ? 'Log in' : 'Sign up' }}
+        </button>
+      </div>
+
+      <div class="text-center mt-4">
+        <button class="btn btn-sm btn-outline-secondary" (click)="close()">Close</button>
+      </div>
+    </div>
   </div>
 
-  <input [(ngModel)]="vat" placeholder="VAT Number" />
+<!-- Right Side: Image -->
+<div class="d-none d-md-block w-50 vh-100 white d-flex align-items-center justify-content-center">
+  <img
+    src="assets/images/login.png"
+    alt="Login Illustration"
+    class="img-fluid h-100 w-100"
+    style="object-fit: contain; object-position: center; background-color: #ffff;"
+  />
+</div>
 
-  <div *ngIf="message" class="message">{{ message }}</div>
-
-  <div class="vat-actions">
-    <button (click)="submit()">Submit</button>
-  </div>
-
-  <a *ngIf="!signUpMode"
-     (click)="enableSignUp()"
-     class="signup-link">
-     Sign up
-  </a>
 </div>
