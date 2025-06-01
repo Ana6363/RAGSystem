@@ -92,24 +92,41 @@
 <div *ngIf="chats.length" class="border rounded p-4 bg-white d-flex flex-column" style="height: 70vh;">
 
   <!-- Messages list -->
-  <div *ngIf="chats[selected].messages?.length; else noMessages" style="flex-grow: 1; overflow-y: auto; margin-bottom: 1rem;">
+  <div style="flex-grow: 1; overflow-y: auto;" class="mb-3">
     <div
       *ngFor="let msg of chats[selected].messages"
-      class="mb-3 pb-2 border-bottom">
-      <strong class="d-block text-capitalize">
-        {{ msg.role }}
-      </strong>
-      <p class="mb-0">{{ msg.content }}</p>
+      class="d-flex mb-3"
+      [ngClass]="{
+        'justify-content-end': msg.role === 'user',
+        'justify-content-start': msg.role !== 'user'
+      }"
+    >
+      <div
+        class="p-2 rounded"
+        [ngClass]="{
+          'bg-light text-dark': msg.role === 'user',
+          'bg-primary text-white': msg.role !== 'user'
+        }"
+        style="max-width: 75%; white-space: pre-wrap;"
+      >
+        <div class="small fw-semibold text-capitalize mb-1">
+          {{ msg.role }}
+        </div>
+        <div>{{ msg.content }}</div>
+      </div>
     </div>
   </div>
+  
+
 
   <ng-template #noMessages>
     <p class="text-muted">No messages yet.</p>
   </ng-template>
 
-  <!-- New message input bar -->
+</div>
+
  <!-- New message input bar -->
-<form (submit)="sendMessage()" class="d-flex">
+ <form (submit)="sendMessage()" class="d-flex">
   <input
     type="text"
     [(ngModel)]="newMessage"
@@ -121,7 +138,5 @@
   />
   <button type="submit" class="btn btn-primary">Send</button>
 </form>
-
-</div>
 
 <p *ngIf="!chats.length" class="text-muted">No chats available.</p>
