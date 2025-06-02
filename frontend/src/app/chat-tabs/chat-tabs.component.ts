@@ -154,7 +154,7 @@ export class ChatTabsComponent implements OnInit, AfterViewInit {
           userId: userId,
           fileIds: [],
           messages: [],
-          title: 'New Chat'
+          title: null
         };
 
         this.chatService.createChatHistory(dto).subscribe({
@@ -298,8 +298,7 @@ export class ChatTabsComponent implements OnInit, AfterViewInit {
             const dto = {
               userId,
               fileIds: [doc.id],
-              messages: [],
-              title: doc.fileName
+              messages: []
             };
   
             this.chatService.createChatHistory(dto).subscribe({
