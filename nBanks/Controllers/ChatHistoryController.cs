@@ -168,6 +168,44 @@ namespace nBanks.Controllers
             }
         }
 
+        [HttpDelete("file")]
+        public async Task<IActionResult> DeleteFileAsync(string chatId, string fileId)
+        {
+            if (string.IsNullOrWhiteSpace(chatId) || string.IsNullOrWhiteSpace(fileId))
+            {
+                return BadRequest(new { message = "ChatId and FileId are required." });
+            }
+
+            try
+            {
+                var chat = await _chatHistoryService.GetChatHistoryById(chatId);
+                if (chat == null)
+                {
+                    return NotFound(new { message = "Chat not found." });
+                }
+
+                if (!chat.FileIds.Contains(fileId))
+                {
+                    return NotFound(new { message = "File is not attached to this chat." });
+                }
+
+                chat.FileIds.Remove(fileId);
+                await _chatHistoryService.UpdateChatHistory(new ChatHistoryDTO
+                {
+                    Id = chat.Id,
+                    UserId = chat.UserId,
+                    FileIds = chat.FileIds,
+                    Messages = chat.Messages,
+                    Title = chat.Title
+                });
+
+                return Ok(new { message = "File removed from chat successfully." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
 
     }
 }

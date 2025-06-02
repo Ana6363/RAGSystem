@@ -93,6 +93,16 @@ namespace nBanks.Application.ChatHistories
             if (existingChatHistory == null)
                 throw new Exception("Chat history not found.");
 
+            if (chatHistoryDTO.FileIds != null)
+            {
+                existingChatHistory.FileIds = chatHistoryDTO.FileIds;
+            }
+
+            if (!string.IsNullOrWhiteSpace(chatHistoryDTO.Title))
+            {
+                existingChatHistory.Title = chatHistoryDTO.Title;
+            }
+
             if (chatHistoryDTO.Messages != null && chatHistoryDTO.Messages.Count > 0)
             {
                 foreach (var message in chatHistoryDTO.Messages)
@@ -104,6 +114,7 @@ namespace nBanks.Application.ChatHistories
 
             await _chatHistoryRepository.UpdateChatHistoryAsync(existingChatHistory);
         }
+
 
         public async Task DeleteChatHistory(string id)
         {
