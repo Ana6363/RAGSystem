@@ -44,6 +44,16 @@ export class DocumentService {
     });
   }
   
+  deleteFileFromChat(chatId: string, fileId: string): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/ChatHistory/file`, {
+      params: {
+        chatId: chatId,
+        fileId: fileId
+      }
+    });
+  }
+  
+  
   
   
 }

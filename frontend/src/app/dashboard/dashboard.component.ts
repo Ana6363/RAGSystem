@@ -16,6 +16,7 @@ export class DashboardComponent {
   vatNumber!: string;
   currentFiles: { id: string; fileName: string }[] = [];
   selectedChatRef: any = null;
+  chatId: string | null = null;
 
   constructor(private authService: AuthService, private documentService: DocumentService, router: Router) {
     if (!authService.isLoggedIn()) router.navigate(['/']);
@@ -23,7 +24,7 @@ export class DashboardComponent {
   }
 
   onChatSelected(chat: any) {
-    this.selectedChatRef = chat;
+    this.chatId = chat?.id ?? null;
     const ids = chat?.fileIds ?? [];
     console.log('📥 Chat fileIds:', ids);
   
@@ -73,20 +74,28 @@ export class DashboardComponent {
   }
   
   deleteFile(file: { id: string; fileName: string }, event: MouseEvent) {
-    event.stopPropagation(); // prevent preview from being triggered
+    event.stopPropagation();
   
     if (!confirm(`Are you sure you want to delete "${file.fileName}"?`)) return;
   
-    this.documentService.deleteFileByName(file.fileName).subscribe({
+    if (!this.chatId) {
+      console.warn('No chat selected — cannot delete file');
+      return;
+    }
+    
+    this.documentService.deleteFileFromChat(this.chatId, file.id).subscribe({
+    
       next: () => {
+        // Remove the file from the sidebar list
         this.currentFiles = this.currentFiles.filter(f => f.id !== file.id);
       },
       error: (err: any) => {
-        console.error('Failed to delete file:', err);
-        alert('Failed to delete file.');
+        console.error('Failed to remove file from chat:', err);
+        alert('Failed to remove file from chat.');
       }
     });
   }
+  
   
 
   
