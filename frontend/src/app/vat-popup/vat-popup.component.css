@@ -66,5 +66,123 @@
   .signup-link:hover {
     text-decoration: none;
   }
+
+  .nbanker-title {
+    font-family: "Open Sans", sans-serif;
+    font-size: 31.2px;
+    font-weight: 800;
+    line-height: 40px;
+    color: rgb(30, 32, 40);
+    margin-bottom: 0.25rem;
+    text-align: left;
+    -webkit-font-smoothing: antialiased;
+  }
+  
+  .nbanker-subtitle {
+    box-sizing: border-box;
+    color: rgb(50, 76, 91);
+    direction: ltr;
+    display: block;
+    font-family: "Open Sans", sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    height: 22px;
+    line-height: 22.1px;
+    margin-bottom: 39px;
+    margin-left: 0px;
+    margin-right: 0px;
+    text-align: left;
+    width: 400px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .nb-input {
+    box-sizing: border-box;
+    display: block;
+    width: 100%;
+    font-family: "Open Sans", sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 22.1px;
+    color: rgb(50, 76, 91);
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    padding: 10px 14px;
+    -webkit-font-smoothing: antialiased;
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  }
+  
+  .nb-input:focus {
+    border-color: #803cf2;
+    box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2);
+    outline: none;
+  }
+  
+  .nb-input-lg {
+    height: 44.1875px;
+  }
+  
+  .nb-button {
+    font-family: "Open Sans", sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 24px;
+    transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    cursor: pointer;
+    text-align: center;
+    display: inline-block;
+  }
+  
+  .nb-button-brand {
+    background-color: #803cf2;
+    color: #fff;
+  }
+  
+  .nb-button-brand:hover:not(:disabled) {
+    background-color: #edeef3;
+  }
+  
+  .nb-button-lg {
+    font-size: 15px;
+    padding: 14px 24px;
+    height: 48px;
+  }
+  
+  .nb-button:disabled {
+    background-color: #edeef3 !important;
+    color: #aaa;
+    cursor: not-allowed;
+    box-shadow: none;
+    opacity: 1;
+  }
+  
+  .msg {
+    color: #6c757d;
+    font-family: "Open Sans", sans-serif;
+    font-size: 14px;
+  }
+  
+  .font-boldest {
+    font-weight: 500;
+  }
+  
+  .info-600 {
+    color: #0021cc;
+  }
+  
+  .font-14 {
+    font-size: 14px;
+  }
+  
+  .text-underline {
+    text-decoration: underline;
+  }
+  
+  .text-underline:hover {
+    text-decoration: none;
+  }
   
   

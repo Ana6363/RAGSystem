@@ -66,6 +66,10 @@ export class VatPopupComponent {
     this.message = '';
   }
 
+  enableLogin() {
+    this.signUpMode = false;
+  }
+
   close(): void {
     this.isVisible = false;
   }
