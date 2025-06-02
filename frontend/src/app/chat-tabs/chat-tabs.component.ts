@@ -20,10 +20,14 @@ export class ChatTabsComponent implements OnInit {
   selected = 0;
   @Output() selectedChat = new EventEmitter<any>();
   @Output() requestCloseChat = new EventEmitter<number>();
+  @Output() fileAttached = new EventEmitter<{ id: string; fileName: string }>();
   chatToCloseIndex: number | null = null;
 
   newMessage: string = '';
   selectedFile: File | null = null;
+  pendingUploadFile: File | null = null;
+  pendingUploadFileName: string | null = null;
+  currentFiles: { id: string; fileName: string }[] = [];
 
   constructor(
     private chatService: ChatHistoryService,
@@ -149,32 +153,101 @@ export class ChatTabsComponent implements OnInit {
     });
   }
 
-  sendMessage() {
-    if (!this.newMessage.trim()) return;
-
-    const currentChat = this.chats[this.selected];
-    if (!currentChat.messages) currentChat.messages = [];
-
-    // Add user message locally
-    currentChat.messages.push({
-      role: 'user',
-      content: this.newMessage.trim()
-    });
-
-    this.chatService.askQuestion(currentChat.id, this.newMessage.trim()).subscribe({
-      next: (messages) => {
-        // Only append assistant messages from backend
-        const assistantMessages = messages.filter(m => m.role === 'assistant');
-        currentChat.messages.push(...assistantMessages);
-      },
-      error: (err) => {
-        console.error('Error sending message:', err);
-      }
-    });
-
-    this.newMessage = '';
+  openFilePicker() {
+    const input = document.getElementById('fileInput') as HTMLInputElement;
+    if (input) input.click();
+  }
+  
+  onChatFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0] ?? null;
+  
+    if (file && file.type === 'application/pdf') {
+      this.pendingUploadFile = file;
+      this.pendingUploadFileName = file.name;
+    } else {
+      alert('Only PDF files are supported.');
+      this.pendingUploadFile = null;
+      this.pendingUploadFileName = null;
+    }
   }
 
+  sendMessage() {
+    const chat = this.chats[this.selected];
+    if (!chat) return;
+  
+    const hasMessage = !!this.newMessage.trim();
+    const hasFile = !!this.pendingUploadFile;
+  
+    // Do nothing if user didn't enter a message or select a file
+    if (!hasMessage && !hasFile) return;
+  
+    const messageText = this.newMessage.trim();
+  
+    this.chatService.getUserByVat(this.vat).subscribe({
+      next: (user) => {
+        const userId = user.id;
+  
+        // If there's a file, upload first
+        if (hasFile) {
+          const formData = new FormData();
+          formData.append('File', this.pendingUploadFile!);
+          formData.append('UserId', userId);
+  
+          this.documentService.uploadFile(formData).subscribe({
+            next: (doc) => {
+              const fileId = doc.id;
+  
+              // Attach file to chat
+              this.documentService.attachFileToChat(chat.id, fileId).subscribe({
+                next: () => {
+                  // Update local state
+                  chat.fileIds = chat.fileIds || [];
+                  chat.fileIds.push(fileId);
+                  this.fileAttached.emit({ id: fileId, fileName: doc.fileName });
+  
+                  // Send message now (if present)
+                  if (hasMessage) {
+                    this.sendQuestion(chat.id, messageText, chat);
+                  }
+                },
+                error: (err) => console.error('Failed to attach file:', err)
+              });
+            },
+            error: (err) => console.error('File upload failed:', err)
+          });
+        } else if (hasMessage) {
+          // If only message, send immediately
+          this.sendQuestion(chat.id, messageText, chat);
+        }
+  
+        // Clear input
+        this.newMessage = '';
+        this.pendingUploadFile = null;
+        this.pendingUploadFileName = null;
+      },
+      error: (err) => console.error('Error fetching user by VAT:', err)
+    });
+  }
+
+  private sendQuestion(chatId: string, question: string, chat: any) {
+    chat.messages = chat.messages || [];
+  
+    chat.messages.push({ role: 'user', content: question });
+  
+    this.chatService.askQuestion(chatId, question).subscribe({
+      next: (res) => {
+        const aiMessages = res.filter(m => m.role === 'assistant');
+        chat.messages.push(...aiMessages);
+      },
+      error: (err) => {
+        console.error('Failed to ask question:', err);
+      }
+    });
+  }
+  
+  
+  
   openNewChatModal() {
     const modalElement = document.getElementById('newChatModal');
     if (modalElement) {

@@ -27,5 +27,17 @@ export class DocumentService {
     );
   }
   
+  attachFileToChat(chatId: string, fileId: string): Observable<any> {
+    return this.http.put(
+      'http://localhost:5048/api/ChatHistory/file',
+      JSON.stringify(fileId),
+      {
+        params: { chatId },
+        headers: { 'Content-Type': 'application/json' }
+      }
+    );
+  }
+  
+  
   
 }

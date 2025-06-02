@@ -68,7 +68,9 @@ export class DashboardComponent {
     window.open(previewUrl, '_blank');
   }
   
-  
+  addFileToSidebar(file: { id: string; fileName: string }) {
+    this.currentFiles.push(file);
+  }  
 
   
 }

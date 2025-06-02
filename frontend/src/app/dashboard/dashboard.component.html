@@ -43,7 +43,8 @@
     <app-chat-tabs
       [vat]="vatNumber"
       (selectedChat)="onChatSelected($event)"
-    >
-    </app-chat-tabs>
+      (fileAttached)="addFileToSidebar($event)"
+    ></app-chat-tabs>
+
   </div>
 </div>
