@@ -1,9 +1,9 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import { ChatHistoryService } from '../chat-history.service';
 import { DocumentService } from '../document.service';
 import { CommonModule } from '@angular/common';
 import { NgFor, NgIf } from '@angular/common';
-import { FormsModule } from '@angular/forms';  // <-- import FormsModule
+import { FormsModule } from '@angular/forms'; 
 
 declare const bootstrap: any;
 
@@ -14,13 +14,14 @@ declare const bootstrap: any;
   styleUrls: ['./chat-tabs.component.css'],
   imports: [CommonModule, NgFor, NgIf, FormsModule]
 })
-export class ChatTabsComponent implements OnInit {
+export class ChatTabsComponent implements OnInit, AfterViewInit {
   @Input() vat: string = '';
   chats: any[] = [];
   selected = 0;
   @Output() selectedChat = new EventEmitter<any>();
   @Output() requestCloseChat = new EventEmitter<number>();
   @Output() fileAttached = new EventEmitter<{ id: string; fileName: string }>();
+  @ViewChild('messageContainer') messageContainer!: ElementRef;
   chatToCloseIndex: number | null = null;
 
   newMessage: string = '';
@@ -62,6 +63,25 @@ export class ChatTabsComponent implements OnInit {
         console.error('Error fetching user by VAT:', err);
       }
     });
+  }
+
+  ngAfterViewChecked(): void {
+    this.scrollToBottom();
+  }
+
+  private scrollToBottom(): void {
+    try {
+      this.messageContainer.nativeElement.scrollTop = this.messageContainer.nativeElement.scrollHeight;
+    } catch (err) {
+      console.warn('Scroll failed', err);
+    }
+  }
+
+  ngAfterViewInit(): void {
+    const chatContent = document.querySelector('.chat-content');
+    if (chatContent) {
+      chatContent.scrollTop = chatContent.scrollHeight;
+    }
   }
 
   choose(i: number) {

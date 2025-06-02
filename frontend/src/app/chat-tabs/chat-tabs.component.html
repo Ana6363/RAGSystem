@@ -125,9 +125,9 @@
 <div *ngIf="chats.length" class="border rounded p-4 bg-white d-flex flex-column" style="height: 70vh;">
 
   <!-- Messages list -->
-  <div style="flex-grow: 1; overflow-y: auto;" class="mb-3">
+  <div #messageContainer style="flex-grow: 1; overflow-y: auto;" class="mb-3">
     <div
-      *ngFor="let msg of chats[selected].messages"
+      *ngFor="let msg of chats[selected]?.messages"
       class="d-flex mb-3"
       [ngClass]="{
         'justify-content-end': msg.role === 'user',
@@ -149,8 +149,6 @@
       </div>
     </div>
   </div>
-  
-
 
   <ng-template #noMessages>
     <p class="text-muted">No messages yet.</p>
