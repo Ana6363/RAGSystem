@@ -70,7 +70,24 @@ export class DashboardComponent {
   
   addFileToSidebar(file: { id: string; fileName: string }) {
     this.currentFiles.push(file);
-  }  
+  }
+  
+  deleteFile(file: { id: string; fileName: string }, event: MouseEvent) {
+    event.stopPropagation(); // prevent preview from being triggered
+  
+    if (!confirm(`Are you sure you want to delete "${file.fileName}"?`)) return;
+  
+    this.documentService.deleteFileByName(file.fileName).subscribe({
+      next: () => {
+        this.currentFiles = this.currentFiles.filter(f => f.id !== file.id);
+      },
+      error: (err: any) => {
+        console.error('Failed to delete file:', err);
+        alert('Failed to delete file.');
+      }
+    });
+  }
+  
 
   
 }

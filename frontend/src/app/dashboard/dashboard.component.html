@@ -13,10 +13,17 @@
           <a
             *ngFor="let file of currentFiles"
             href="javascript:void(0)"
-            class="list-group-item list-group-item-action text-truncate small"
+            class="list-group-item list-group-item-action text-truncate small d-flex justify-content-between align-items-center"
             (click)="previewFile(file)"
           >
-            {{ file.fileName }}
+            <span class="me-2 text-truncate">{{ file.fileName }}</span>
+            <button
+              class="btn btn-sm btn-danger"
+              style="padding: 0.1rem 0.4rem;"
+              (click)="deleteFile(file, $event)"
+            >
+              &minus;
+            </button>
           </a>
 
         </div>

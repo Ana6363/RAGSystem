@@ -38,6 +38,12 @@ export class DocumentService {
     );
   }
   
+  deleteFileByName(fileName: string) {
+    return this.http.delete<any>(`http://localhost:5048/api/Documents/delete`, {
+      params: { name: fileName }
+    });
+  }
+  
   
   
 }
