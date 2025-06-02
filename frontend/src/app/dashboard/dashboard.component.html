@@ -4,7 +4,7 @@
     class="d-flex flex-column justify-content-between p-3 text-bg-dark"
     style="width: 280px; height: 100vh;"
   >
-    <!-- Top: Upload files & file list -->
+    <!-- Upload files & file list -->
     <div>
       <h4 class="mb-4">Uploaded Files</h4>
 
@@ -12,10 +12,13 @@
         <div class="list-group overflow-auto mb-3" style="max-height: 60vh;">
           <a
             *ngFor="let file of currentFiles"
-            href="#"
+            href="javascript:void(0)"
             class="list-group-item list-group-item-action text-truncate small"
-            >{{ file.fileName }}</a
+            (click)="previewFile(file)"
           >
+            {{ file.fileName }}
+          </a>
+
         </div>
       </ng-container>
 

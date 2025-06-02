@@ -15,6 +15,7 @@ import { DocumentService } from '../document.service';
 export class DashboardComponent {
   vatNumber!: string;
   currentFiles: { id: string; fileName: string }[] = [];
+  selectedChatRef: any = null;
 
   constructor(private authService: AuthService, private documentService: DocumentService, router: Router) {
     if (!authService.isLoggedIn()) router.navigate(['/']);
@@ -22,6 +23,7 @@ export class DashboardComponent {
   }
 
   onChatSelected(chat: any) {
+    this.selectedChatRef = chat;
     const ids = chat?.fileIds ?? [];
     console.log('📥 Chat fileIds:', ids);
   
@@ -41,6 +43,33 @@ export class DashboardComponent {
       }
     });
   }  
+
+  previewFile(file: { id: string; fileName: string }) {
+    if (!file || !file.fileName) {
+      console.warn('Invalid file clicked');
+      return;
+    }
+  
+    console.log('🧪 Previewing file:', file);
+  
+    if (!this.selectedChatRef?.id) {
+      console.warn('No selected chat context');
+      return;
+    }
+  
+    const previewUrl = this.documentService.previewFile(
+      this.selectedChatRef.id,
+      file.fileName
+    );
+  
+    console.log('📄 Preview URL:', previewUrl);
+  
+    // Open the PDF in a new tab
+    window.open(previewUrl, '_blank');
+  }
+  
+  
+
   
 }
 

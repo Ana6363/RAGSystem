@@ -33,13 +33,13 @@ export class ChatHistoryService {
   }
 
   askQuestion(chatId: string, question: string) {
-  const body = {
-    chatId: chatId,
-    question: question
-  };
-  return this.http.post<any[]>(`${this.baseUrl}/ChatHistory/ask`, body, {
-    headers: { 'Content-Type': 'application/json' }
-  });
-}
+    const body = {
+      chatId: chatId,
+      question: question
+    };
+    return this.http.post<any[]>(`${this.baseUrl}/ChatHistory/ask`, body, {
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
 
 }

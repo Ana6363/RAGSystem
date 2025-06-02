@@ -11,7 +11,7 @@ declare const bootstrap: any;
   standalone: true,
   templateUrl: './chat-tabs.component.html',
   styleUrls: ['./chat-tabs.component.css'],
-  imports: [CommonModule, NgFor, NgIf, FormsModule]  // <-- add FormsModule here
+  imports: [CommonModule, NgFor, NgIf, FormsModule]
 })
 export class ChatTabsComponent implements OnInit {
   @Input() vat: string = '';
@@ -21,7 +21,7 @@ export class ChatTabsComponent implements OnInit {
   @Output() requestCloseChat = new EventEmitter<number>();
   chatToCloseIndex: number | null = null;
 
-  newMessage: string = '';  // <-- track new message input
+  newMessage: string = '';
 
   constructor(private chatService: ChatHistoryService) {}
 

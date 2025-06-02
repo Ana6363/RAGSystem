@@ -14,4 +14,10 @@ export class DocumentService {
         ids
       );
   }
+
+  previewFile(chatId: string, fileName: string): string {
+    const encodedFileName = encodeURIComponent(fileName);
+    return `${this.baseUrl}/ChatHistory/preview?chatId=${chatId}&fileName=${encodedFileName}`;
+  }
+  
 }
