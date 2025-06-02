@@ -1,3 +1,35 @@
+<!-- New Chat Modal -->
+<div
+  class="modal fade"
+  id="newChatModal"
+  tabindex="-1"
+  aria-labelledby="newChatModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form (submit)="handleNewChat($event)">
+        <div class="modal-header">
+          <h5 class="modal-title" id="newChatModalLabel">Start New Chat</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="chatFile" class="form-label">Select a file to start the chat</label>
+            <input type="file" class="form-control" id="chatFile" (change)="onFileSelected($event)" required />
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary" [disabled]="!selectedFile">Create Chat</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
 <!-- Confirmation Modal -->
 <div
   class="modal fade"
@@ -79,13 +111,14 @@
     <a
       href="javascript:void(0)"
       class="nav-link"
-      (click)="createNewChat()"
       style="font-weight: bold; font-size: 1.5rem; text-align: center; padding: 0 1rem;"
       title="New Chat"
+      (click)="openNewChatModal()"
     >
       +
     </a>
   </li>
+
 </ul>
 
 <!-- chat content -->

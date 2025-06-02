@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { ChatHistoryService } from '../chat-history.service';
+import { DocumentService } from '../document.service';
 import { CommonModule } from '@angular/common';
 import { NgFor, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';  // <-- import FormsModule
@@ -22,8 +23,13 @@ export class ChatTabsComponent implements OnInit {
   chatToCloseIndex: number | null = null;
 
   newMessage: string = '';
+  selectedFile: File | null = null;
 
-  constructor(private chatService: ChatHistoryService) {}
+  constructor(
+    private chatService: ChatHistoryService,
+    private documentService: DocumentService
+  ) {}
+  
 
   ngOnInit(): void {
     if (!this.vat) {
@@ -143,33 +149,90 @@ export class ChatTabsComponent implements OnInit {
     });
   }
 
-sendMessage() {
-  if (!this.newMessage.trim()) return;
+  sendMessage() {
+    if (!this.newMessage.trim()) return;
 
-  const currentChat = this.chats[this.selected];
-  if (!currentChat.messages) currentChat.messages = [];
+    const currentChat = this.chats[this.selected];
+    if (!currentChat.messages) currentChat.messages = [];
 
-  // Add user message locally
-  currentChat.messages.push({
-    role: 'user',
-    content: this.newMessage.trim()
-  });
+    // Add user message locally
+    currentChat.messages.push({
+      role: 'user',
+      content: this.newMessage.trim()
+    });
 
-  this.chatService.askQuestion(currentChat.id, this.newMessage.trim()).subscribe({
-    next: (messages) => {
-      // Only append assistant messages from backend
-      const assistantMessages = messages.filter(m => m.role === 'assistant');
-      currentChat.messages.push(...assistantMessages);
-    },
-    error: (err) => {
-      console.error('Error sending message:', err);
+    this.chatService.askQuestion(currentChat.id, this.newMessage.trim()).subscribe({
+      next: (messages) => {
+        // Only append assistant messages from backend
+        const assistantMessages = messages.filter(m => m.role === 'assistant');
+        currentChat.messages.push(...assistantMessages);
+      },
+      error: (err) => {
+        console.error('Error sending message:', err);
+      }
+    });
+
+    this.newMessage = '';
+  }
+
+  openNewChatModal() {
+    const modalElement = document.getElementById('newChatModal');
+    if (modalElement) {
+      const modal = new bootstrap.Modal(modalElement);
+      modal.show();
     }
-  });
+  }
 
-  this.newMessage = '';
-}
+  onFileSelected(event: any) {
+    const file = event.target.files?.[0] ?? null;
+    this.selectedFile = file;
+  }
 
-
-
+  handleNewChat(event: Event) {
+    event.preventDefault();
+    if (!this.selectedFile || !this.vat) return;
+  
+    this.chatService.getUserByVat(this.vat).subscribe({
+      next: (user) => {
+        const userId = user.id;
+  
+        const formData = new FormData();
+        formData.append('File', this.selectedFile!);
+        formData.append('UserId', userId);
+  
+        this.documentService.uploadFile(formData).subscribe({
+          next: (doc) => {
+            const dto = {
+              userId,
+              fileIds: [doc.id],
+              messages: [],
+              title: doc.fileName
+            };
+  
+            this.chatService.createChatHistory(dto).subscribe({
+              next: (newChat) => {
+                this.chats.push(newChat);
+                this.choose(this.chats.length - 1);
+                this.selectedFile = null;
+  
+                const modalElement = document.getElementById('newChatModal');
+                if (modalElement) bootstrap.Modal.getInstance(modalElement)?.hide();
+              },
+              error: (err) => {
+                console.error('Failed to create new chat:', err);
+              }
+            });
+          },
+          error: (err: any) => {
+            console.error('File upload failed:', err);
+          }
+        });
+      },
+      error: (err) => {
+        console.error('Error fetching user by VAT:', err);
+      }
+    });
+  }
+  
 
 }

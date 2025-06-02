@@ -19,5 +19,13 @@ export class DocumentService {
     const encodedFileName = encodeURIComponent(fileName);
     return `${this.baseUrl}/ChatHistory/preview?chatId=${chatId}&fileName=${encodedFileName}`;
   }
+
+  uploadFile(formData: FormData): Observable<{ id: string; fileName: string }> {
+    return this.http.post<{ id: string; fileName: string }>(
+      'http://localhost:5048/api/Documents/upload',
+      formData
+    );
+  }
+  
   
 }
