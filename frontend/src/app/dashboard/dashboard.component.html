@@ -1,12 +1,11 @@
-<div class="d-flex" style="min-height: 100vh; background: white;">
+<div class="d-flex" style="min-height: 100vh; background-color: #f4f0fa; color: #333;">
   <!-- Sidebar -->
   <div
-    class="d-flex flex-column justify-content-between p-3 text-bg-dark"
-    style="width: 280px; height: 100vh;"
+    class="d-flex flex-column justify-content-between p-3"
+    style="width: 280px; height: 100vh; background-color: #3a2a59 !important; color: #e0e0e0 !important;"
   >
-    <!-- Upload files & file list -->
     <div>
-      <h4 class="mb-4">Uploaded Files</h4>
+      <h4 class="mb-4" style="color: #d1c4e9;">Uploaded Files</h4>
 
       <ng-container *ngIf="currentFiles && currentFiles.length; else noFiles">
         <div class="list-group overflow-auto mb-3" style="max-height: 60vh;">
@@ -15,30 +14,41 @@
             href="javascript:void(0)"
             class="list-group-item list-group-item-action text-truncate small d-flex justify-content-between align-items-center"
             (click)="previewFile(file)"
+            style="background-color: transparent !important; color: #c5c1db !important; border: none; transition: background-color 0.2s ease;"
+            onmouseover="this.style.backgroundColor='#594d7d';"
+            onmouseout="this.style.backgroundColor='transparent';"
           >
             <span class="me-2 text-truncate">{{ file.fileName }}</span>
             <button
-              class="btn btn-sm btn-danger"
-              style="padding: 0.1rem 0.4rem;"
+              class="btn btn-sm"
+              style="padding: 0.1rem 0.4rem; background-color: #e57373; border: none; color: white; border-radius: 3px; transition: background-color 0.2s ease;"
               (click)="deleteFile(file, $event)"
+              onmouseover="this.style.backgroundColor='#d45252';"
+              onmouseout="this.style.backgroundColor='#e57373';"
             >
               &minus;
             </button>
           </a>
-
         </div>
       </ng-container>
 
       <ng-template #noFiles>
-        <p class="small text-white-50 mb-3">No files attached.</p>
+        <p class="small" style="color: #b0aede;">No files attached.</p>
       </ng-template>
     </div>
 
-    <!-- Bottom: VAT info -->
-    <div class="text-white-50 small">
-      <span (click)="toggleLogoffOptions()" style="cursor: pointer;">Logged in with VAT: {{ vatNumber }}</span>
+    <div style="color: #aaa6cc; font-size: 0.875rem;">
+      <span (click)="toggleLogoffOptions()" style="cursor: pointer; user-select: none;">Logged in with VAT: {{ vatNumber }}</span>
       <div *ngIf="showLogoffOptions" class="mt-2">
-        <button class="btn btn-sm btn-danger" (click)="logoff()">Logoff</button>
+        <button
+          class="btn btn-sm"
+          (click)="logoff()"
+          style="border: 1px solid #e57373; color: #e57373; background-color: transparent; border-radius: 4px; transition: all 0.2s ease;"
+          onmouseover="this.style.backgroundColor='#e57373'; this.style.color='white';"
+          onmouseout="this.style.backgroundColor='transparent'; this.style.color='#e57373';"
+        >
+          Logoff
+        </button>
       </div>
     </div>
   </div>
@@ -46,15 +56,16 @@
   <!-- Main chat panel -->
   <div
     class="flex-grow-1 d-flex flex-column p-4"
-    style="overflow-y: auto; height: 100vh;"
+    style="overflow-y: auto; background-color: #f4f0fa; color: #333;"
   >
-    <h1 class="fw-semibold mb-3">🗂️ Chats</h1>
+    <h1 class="fw-semibold mb-3" style="color: #5e4b99; border-bottom: 2px solid #d1c4e9; padding-bottom: 0.3rem;">
+      Chats Overview
+    </h1>
 
     <app-chat-tabs
       [vat]="vatNumber"
       (selectedChat)="onChatSelected($event)"
       (fileAttached)="addFileToSidebar($event)"
     ></app-chat-tabs>
-
   </div>
 </div>
