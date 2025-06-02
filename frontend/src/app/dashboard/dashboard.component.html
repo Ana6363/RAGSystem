@@ -36,7 +36,10 @@
 
     <!-- Bottom: VAT info -->
     <div class="text-white-50 small">
-      Logged in with VAT: {{ vatNumber }}
+      <span (click)="toggleLogoffOptions()" style="cursor: pointer;">Logged in with VAT: {{ vatNumber }}</span>
+      <div *ngIf="showLogoffOptions" class="mt-2">
+        <button class="btn btn-sm btn-danger" (click)="logoff()">Logoff</button>
+      </div>
     </div>
   </div>
 

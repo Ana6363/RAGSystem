@@ -17,8 +17,9 @@ export class DashboardComponent {
   currentFiles: { id: string; fileName: string }[] = [];
   selectedChatRef: any = null;
   chatId: string | null = null;
+  showLogoffOptions: boolean = false;
 
-  constructor(private authService: AuthService, private documentService: DocumentService, router: Router) {
+  constructor(private authService: AuthService, private documentService: DocumentService, private router: Router) {
     if (!authService.isLoggedIn()) router.navigate(['/']);
     this.vatNumber = authService.vatNumber;
   }
@@ -96,8 +97,13 @@ export class DashboardComponent {
     });
   }
   
-  
+  logoff(): void {
+    this.authService.logout();
+    this.router.navigate(['/']);
+  }
 
-  
+  toggleLogoffOptions(): void {
+    this.showLogoffOptions = !this.showLogoffOptions;
+  }
 }
 
