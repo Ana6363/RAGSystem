@@ -1,214 +1,3 @@
-<style>
-  :root {
-    --primary-color: #6f42c1; /* Bootstrap purple */
-    --secondary-color: #0d6efd; /* Bootstrap blue */
-    --light-purple: #ede7f6;
-    --light-blue: #e3f2fd;
-    --chat-bg-user: #d1c4e9;
-    --chat-bg-ai: #bbdefb;
-  }
-
-  .chat-container {
-    background: #f4f0fa;
-    border-radius: 1rem;
-    border: 1px solid var(--light-purple);
-    box-shadow: 0 4px 12px rgba(111, 66, 193, 0.15);
-    display: flex;
-    flex-direction: column;
-    height: 70vh;
-  }
-
-  /* Chat tabs */
-  ul.nav-tabs {
-    border-bottom: 2px solid var(--light-purple);
-    overflow-x: auto;
-    white-space: nowrap;
-  }
-
-  ul.nav-tabs li.nav-item {
-    max-width: 300px;
-  }
-
-  ul.nav-tabs li.nav-item a.nav-link {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    padding-right: 1.5rem;
-    transition: background-color 0.3s ease, color 0.3s ease;
-  }
-
-  .chat-tab-active {
-    background-color: var(--light-purple) !important;
-    color: var(--primary-color) !important;
-    font-weight: 600;
-    border-color: var(--primary-color) !important;
-  }
-
-  .chat-tab-inactive:hover {
-    background-color: var(--light-blue);
-    color: var(--secondary-color);
-  }
-
-  /* Close button in tabs */
-  ul.nav-tabs .btn-close {
-    margin-left: 0.5rem;
-    font-size: 1rem;
-  }
-
-  /* New chat "+" tab */
-  ul.nav-tabs li.nav-item a.text-primary {
-    font-weight: 700;
-    font-size: 1.5rem;
-    padding: 0 1rem;
-  }
-
-  /* Messages container */
-  .chat-container > .messages-container {
-    overflow-y: auto;
-    flex-grow: 1;
-    padding-right: 1rem;
-    margin-bottom: 1rem;
-  }
-
-  /* Scrollbar */
-  .chat-container > .messages-container::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  .chat-container > .messages-container::-webkit-scrollbar-thumb {
-    background-color: var(--primary-color);
-    border-radius: 3px;
-  }
-
-  /* Each message bubble */
-  .user-message {
-    background-color: var(--chat-bg-user);
-    color: #4a148c;
-    border-radius: 1rem 1rem 0.5rem 1rem;
-    padding: 1rem;
-    max-width: 75%;
-    white-space: pre-wrap;
-    box-shadow: 0 1px 4px rgba(111, 66, 193, 0.15);
-  }
-
-  .ai-message {
-    background-color: var(--chat-bg-ai);
-    color: #0d47a1;
-    border-radius: 1rem 1rem 1rem 0.5rem;
-    padding: 1rem;
-    max-width: 75%;
-    white-space: pre-wrap;
-    box-shadow: 0 1px 4px rgba(13, 54, 190, 0.15);
-  }
-
-  /* Message wrapper: alignment */
-  .d-flex.justify-content-end {
-    justify-content: flex-end !important;
-  }
-
-  .d-flex.justify-content-start {
-    justify-content: flex-start !important;
-  }
-
-  /* Role label above message */
-  .small.fw-semibold.text-capitalize {
-    margin-bottom: 0.25rem;
-    font-weight: 600 !important;
-  }
-
-  /* Modal header */
-  .new-chat-modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    border-bottom: 1px solid #d1c4e9;
-    background-color: #d1c4e9;
-    padding: 1rem 1rem 0.75rem 1rem;
-    border-top-left-radius: 0.75rem;
-    border-top-right-radius: 0.75rem;
-  }
-
-  .new-chat-modal-header .modal-title {
-    color: #333;
-    margin: 0;
-    font-weight: 700;
-    font-size: 1.25rem;
-  }
-
-  .new-chat-modal-header .btn-close {
-    filter: none !important;
-    opacity: 1;
-    background-color: transparent;
-    margin-top: -0.25rem;
-    width: 1.25rem;
-    height: 1.25rem;
-  }
-
-  .new-chat-modal-header .btn-close::before,
-  .new-chat-modal-header .btn-close::after {
-    background-color: #333 !important;
-  }
-
-  /* Confirm Close modal header */
-  #confirmCloseModal .modal-header.bg-danger.text-white {
-    border-top-left-radius: 0.75rem;
-    border-top-right-radius: 0.75rem;
-  }
-
-  /* Modal content */
-  .modal-content {
-    background-color: #fff !important;
-    color: #333 !important;
-    border: 1px solid #eee;
-    border-radius: 0.75rem;
-  }
-
-  /* File input styling */
-  input[type="file"] {
-    cursor: pointer;
-  }
-
-  /* Message input field */
-  form.d-flex input.form-control {
-    border-color: var(--primary-color);
-    box-shadow: none;
-    transition: border-color 0.3s ease;
-  }
-
-  form.d-flex input.form-control:focus {
-    border-color: var(--secondary-color);
-    box-shadow: 0 0 8px var(--secondary-color);
-  }
-
-  /* File preview */
-  .file-preview {
-    color: #6c757d;
-    font-style: italic;
-    margin-top: 0.5rem;
-  }
-
-  form.d-flex.align-items-end.gap-2.mt-3 {
-  position: sticky;
-  bottom: 0;
-  background-color: white;
-  padding: 0.5rem 1rem;
-  border-top: 1px solid var(--light-purple);
-  z-index: 10;
-}
-
-form.d-flex button[type="submit"] {
-  opacity: 1 !important;
-  visibility: visible !important;
-  pointer-events: auto !important;
-  transition: none !important;
-}
-
-
-
-</style>
 
 <!-- New Chat Modal -->
 <div
@@ -336,6 +125,7 @@ form.d-flex button[type="submit"] {
 
 <!-- Chat Container -->
 <div *ngIf="chats.length" class="chat-container">
+
   <!-- Messages -->
   <div #messageContainer class="messages-container">
     <div
@@ -358,33 +148,39 @@ form.d-flex button[type="submit"] {
       </div>
     </div>
   </div>
+
+  <!-- Message Input -->
+  <div class="chat-input-wrapper">
+    <form (submit)="sendMessage()" class="d-flex align-items-end gap-2">
+      <textarea
+        #textarea
+        [(ngModel)]="newMessage"
+        name="message"
+        class="form-control chat-textarea"
+        placeholder="Ask anything here"
+        rows="1"
+        required
+        autocomplete="off"
+      ></textarea>
+
+      <button
+        type="button"
+        class="btn btn-outline-primary"
+        (click)="openFilePicker()"
+        aria-label="Attach file"
+        title="Attach file"
+      >
+        📎
+      </button>
+      <button type="submit" class="btn btn-primary">Send</button>
+    </form>
+  </div>
+
 </div>
 
 <!-- No Chats -->
 <p *ngIf="!chats.length" class="text-muted text-center">No chats available.</p>
 
-<!-- Message Input -->
-<form (submit)="sendMessage()" class="d-flex align-items-end gap-2 mt-3">
-  <input
-    type="text"
-    [(ngModel)]="newMessage"
-    name="message"
-    class="form-control border-primary"
-    placeholder="Type your message here..."
-    required
-    autocomplete="off"
-  />
-  <button
-    type="button"
-    class="btn btn-outline-primary"
-    (click)="openFilePicker()"
-    aria-label="Attach file"
-    title="Attach file"
-  >
-    📎
-  </button>
-  <button type="submit" class="btn btn-primary">Send</button>
-</form>
 
 <!-- Hidden File Input -->
 <input

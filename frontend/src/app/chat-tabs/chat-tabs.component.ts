@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit, AfterViewChecked, ElementRef, ViewChild } from '@angular/core';
 import { ChatHistoryService } from '../chat-history.service';
 import { DocumentService } from '../document.service';
 import { CommonModule } from '@angular/common';
@@ -14,7 +14,7 @@ declare const bootstrap: any;
   styleUrls: ['./chat-tabs.component.css'],
   imports: [CommonModule, NgFor, NgIf, FormsModule]
 })
-export class ChatTabsComponent implements OnInit, AfterViewInit {
+export class ChatTabsComponent implements OnInit, AfterViewInit, AfterViewChecked {
   @Input() vat: string = '';
   chats: any[] = [];
   selected = 0;
@@ -22,6 +22,8 @@ export class ChatTabsComponent implements OnInit, AfterViewInit {
   @Output() requestCloseChat = new EventEmitter<number>();
   @Output() fileAttached = new EventEmitter<{ id: string; fileName: string }>();
   @ViewChild('messageContainer') messageContainer!: ElementRef;
+  @ViewChild('textarea') textarea!: ElementRef;
+
   chatToCloseIndex: number | null = null;
 
   newMessage: string = '';
@@ -34,6 +36,23 @@ export class ChatTabsComponent implements OnInit, AfterViewInit {
     private chatService: ChatHistoryService,
     private documentService: DocumentService
   ) {}
+  
+  ngAfterViewChecked(): void {
+    const el = this.textarea?.nativeElement;
+    if (el) {
+      el.style.height = 'auto';
+      const max = 200;
+      if (el.scrollHeight <= max) {
+        el.style.overflowY = 'hidden';
+        el.style.height    = el.scrollHeight + 'px';
+      } else {
+        el.style.overflowY = 'auto';
+        el.style.height    = max + 'px';
+      }
+    }
+  
+    this.scrollToBottom();
+  }  
   
 
   ngOnInit(): void {
@@ -63,10 +82,6 @@ export class ChatTabsComponent implements OnInit, AfterViewInit {
         console.error('Error fetching user by VAT:', err);
       }
     });
-  }
-
-  ngAfterViewChecked(): void {
-    this.scrollToBottom();
   }
 
   private scrollToBottom(): void {
