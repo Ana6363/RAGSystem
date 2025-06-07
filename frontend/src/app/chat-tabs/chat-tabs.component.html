@@ -151,29 +151,44 @@
 
   <!-- Message Input -->
   <div class="chat-input-wrapper">
-    <form (submit)="sendMessage()" class="d-flex align-items-end gap-2">
-      <textarea
-        #textarea
-        [(ngModel)]="newMessage"
-        name="message"
-        class="form-control chat-textarea"
-        placeholder="Ask anything here"
-        rows="1"
-        required
-        autocomplete="off"
-      ></textarea>
+    <form (submit)="sendMessage()" class="d-flex align-items-end gap-2 w-100">
+      <div class="position-relative flex-grow-1">
+        <textarea
+          #textarea
+          [(ngModel)]="newMessage"
+          name="message"
+          class="form-control chat-textarea pe-5"
+          placeholder="Ask anything here"
+          rows="1"
+          required
+          autocomplete="off"
+        ></textarea>
+    
+        <!-- File upload button -->
+        <button
+          type="button"
+          class="btn p-0 border-0 bg-transparent position-absolute"
+          (click)="openFilePicker()"
+          aria-label="Attach file"
+          title="Attach file"
+          style="right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;"
+        >
+          <img src="assets/images/clip.png" alt="Attach" style="width: 20px; height: 20px;" />
+        </button>
+      </div>
 
+      <!-- Send button -->
       <button
-        type="button"
-        class="btn btn-outline-primary"
-        (click)="openFilePicker()"
-        aria-label="Attach file"
-        title="Attach file"
+        type="submit"
+        class="btn p-0 border-0 bg-transparent d-flex align-items-center justify-content-center"
+        style="align-self: center; height: 100%; margin-left: 10px;"
       >
-        📎
+        <img src="assets/images/send.png" alt="Send" style="width: 35px; height: 35px;" />
       </button>
-      <button type="submit" class="btn btn-primary">Send</button>
+
+      
     </form>
+    
   </div>
 
 </div>
