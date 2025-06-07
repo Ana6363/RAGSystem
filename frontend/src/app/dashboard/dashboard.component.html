@@ -1,11 +1,11 @@
-<div class="d-flex" style="min-height: 100vh; background-color: #f4f0fa; color: #333;">
+<div class="d-flex" style="min-height: 100vh; color: #333;">
   <!-- Sidebar -->
   <div
     class="d-flex flex-column justify-content-between p-3"
     style="width: 280px; height: 100vh; background-color: #3a2a59 !important; color: #e0e0e0 !important;"
   >
     <div>
-      <h4 class="mb-4" style="color: #d1c4e9;">Uploaded Files</h4>
+      <h4 class="mb-4" >Uploaded Files</h4>
 
       <ng-container *ngIf="currentFiles && currentFiles.length; else noFiles">
         <div class="list-group overflow-auto mb-3" style="max-height: 60vh;">
@@ -56,7 +56,7 @@
   <!-- Main chat panel -->
   <div
     class="flex-grow-1 d-flex flex-column p-4"
-    style="overflow-y: auto; background-color: #f4f0fa; color: #333;"
+    style="overflow-y: auto; color: #333;"
   >
     <!-- Removed 'Chats Overview' -->
 
