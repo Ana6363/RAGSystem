@@ -128,22 +128,24 @@
 
   <!-- Messages -->
   <div #messageContainer class="messages-container">
-    <div
-      *ngFor="let msg of chats[selected]?.messages"
-      class="d-flex mb-3"
-      [ngClass]="{
-        'justify-content-end': msg.role === 'user',
-        'justify-content-start': msg.role !== 'user'
-      }"
-    >
+    <div class="messages-inner">
       <div
-        class="shadow-sm"
+        *ngFor="let msg of chats[selected]?.messages"
+        class="d-flex message-wrapper"
         [ngClass]="{
-          'user-message': msg.role === 'user',
-          'ai-message': msg.role !== 'user'
+          'justify-content-end': msg.role === 'user',
+          'justify-content-start': msg.role !== 'user'
         }"
       >
-        <div>{{ msg.content }}</div>
+        <div
+          class="shadow-sm"
+          [ngClass]="{
+            'user-message': msg.role === 'user',
+            'ai-message': msg.role !== 'user'
+          }"
+        >
+          <div>{{ msg.content }}</div>
+        </div>
       </div>
     </div>
   </div>
