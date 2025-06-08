@@ -105,12 +105,14 @@
           [attr.title]="chat.title || ('Chat ' + chat.id)"
         >
           <span class="text-truncate me-1">{{ chat.title || ('Chat ' + chat.id) }}</span>
+
           <button
             type="button"
             class="btn-close ms-2"
             aria-label="Close"
             (click)="prepareToClose(i, $event)"
           ></button>
+          
         </a>
       </li>
   
@@ -127,7 +129,7 @@
     <li class="nav-item">
       <a
         href="javascript:void(0)"
-        class="nav-link text-center text-primary fw-bold fs-4"
+        class="nav-link text-center new-tab-button fw-bold fs-4"
         title="Add New Chat"
         (click)="openNewChatModal()"
       >+</a>

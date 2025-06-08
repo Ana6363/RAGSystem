@@ -38,9 +38,9 @@ export class ChatTabsComponent implements OnInit, AfterViewInit, AfterViewChecke
   ) {}
 
   isSeparatorNeeded(index: number): boolean {
-    return index !== this.selected && 
-           index + 1 !== this.selected &&
-           index + 1 < this.chats.length;
+    const isLast = index === this.chats.length - 1;
+    const isInactive = index !== this.selected;
+    return !isLast || (isLast && isInactive);
   }
   
   
