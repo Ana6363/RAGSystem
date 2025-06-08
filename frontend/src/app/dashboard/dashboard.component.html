@@ -1,24 +1,47 @@
 <div class="d-flex" style="min-height: 100vh; color: #333;">
   <!-- Sidebar -->
   <div
-    class="d-flex flex-column justify-content-between p-3"
-    style="width: 280px; height: 100vh; background-color: #3a2a59 !important; color: #e0e0e0 !important;"
+    class="d-flex flex-column justify-content-between p-3 overflow-hidden"
+    style="width: 280px; height: 100vh; background-color: #f5f6fa !important;"
   >
     <div>
-      <h4 class="mb-4" >Uploaded Files</h4>
+      <h3 class="mb-4" style="font-family: 'Poppins', sans-serif; color: #803cf2; margin-top: 40px;">
+        Uploaded Files
+      </h3>
+      
+      
+      <div class="position-relative text-center mb-3">
 
+        <!-- Horizontal line -->
+        <div
+        style="height: 1px; background-color: #e7e8ea; width: 100%; position: absolute; top: 159px;"
+        ></div>
+      
+        <!-- Robot image -->
+        <img
+          src="assets/images/robotCut.png"
+          alt="Robot"
+          style="
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            height: 250px;
+            object-fit: contain;
+            z-index: 2;
+          "
+        />
+      </div>
+      
       <ng-container *ngIf="currentFiles && currentFiles.length; else noFiles">
-        <div class="list-group overflow-auto mb-3" style="max-height: 60vh;">
+        <div class="list-group overflow-auto mb-3" style="max-height: 60vh; margin-top: 260px;">
           <a
             *ngFor="let file of currentFiles"
             href="javascript:void(0)"
             class="list-group-item list-group-item-action text-truncate small d-flex justify-content-between align-items-center"
             (click)="previewFile(file)"
-            style="background-color: transparent !important; color: #c5c1db !important; border: none; transition: background-color 0.2s ease;"
-            onmouseover="this.style.backgroundColor='#594d7d';"
-            onmouseout="this.style.backgroundColor='transparent';"
           >
-            <span class="me-2 text-truncate">{{ file.fileName }}</span>
+            <span class="me-2 text-truncate filne-name">{{ file.fileName }}</span>
             <button
               class="btn btn-sm"
               style="padding: 0.1rem 0.4rem; background-color: #e57373; border: none; color: white; border-radius: 3px; transition: background-color 0.2s ease;"
@@ -58,8 +81,6 @@
     class="flex-grow-1 d-flex flex-column p-0"
     style="overflow-y: auto; color: #333; background-color: #ffffff;"
   >
-    <!-- Removed 'Chats Overview' -->
-
     <app-chat-tabs
       [vat]="vatNumber"
       (selectedChat)="onChatSelected($event)"
