@@ -13,7 +13,6 @@
     border-left: 1px solid #e7e8ea;
     border-right: 1px solid #e7e8ea;
     border-radius: 12px 12px 0 0 !important;
-    margin-bottom: -2.6px !important;
     
     box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.06);
   }
@@ -34,6 +33,7 @@
     justify-content: center;
     padding-top: 11px;
     padding-bottom: 4px;
+    border-radius: 12px 12px 0 0 !important;
 
     font-weight: 600;
     font-family: 'Poppins', sans-serif;
@@ -49,17 +49,27 @@
   .nav-link .btn-close {
     position: relative;
     margin-top: -1px;
-    width: 0.65rem;
-    height: 0.65rem;
+    width: 0.5rem;
+    height: 0.5rem;
     flex-shrink: 0;
   }
-  
 
   .tab-bar-wrapper {
     background-color: #f5f6fa;
     padding-top: env(safe-area-inset-top);
   }
-  
+
+  .nav-tabs .separator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    padding: 0 0.4rem 0 0.8rem;
+    color: #ccc;
+    font-size: 22px;
+    font-weight: 400;
+    user-select: none;
+  }
   
   .btn-close {
     width: 0.4rem !important;

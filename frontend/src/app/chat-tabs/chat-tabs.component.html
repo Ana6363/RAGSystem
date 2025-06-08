@@ -95,34 +95,44 @@
 <!-- Chat Tabs -->
 <div class="tab-bar-wrapper">
   <ul class="nav nav-tabs mb-3 flex-wrap" *ngIf="chats.length">
-    <li class="nav-item" *ngFor="let chat of chats; index as i">
-      <a
-        href="javascript:void(0)"
-        class="nav-link"
-        [ngClass]="{ 'active': i === selected }"
-        (click)="choose(i)"
-        [attr.title]="chat.title || ('Chat ' + chat.id)"
-        style="padding-right: 1.5rem;"
+    <ng-container *ngFor="let chat of chats; let i = index">
+      <li class="nav-item" [ngClass]="{ 'inactive-tab': i !== selected }">
+        <a
+          href="javascript:void(0)"
+          class="nav-link"
+          [ngClass]="{ 'active': i === selected }"
+          (click)="choose(i)"
+          [attr.title]="chat.title || ('Chat ' + chat.id)"
+        >
+          <span class="text-truncate me-1">{{ chat.title || ('Chat ' + chat.id) }}</span>
+          <button
+            type="button"
+            class="btn-close ms-2"
+            aria-label="Close"
+            (click)="prepareToClose(i, $event)"
+          ></button>
+        </a>
+      </li>
+  
+      <!-- Always render separator, just hide it if not needed -->
+      <li
+        class="nav-item separator"
+        [ngClass]="{ 'visible': isSeparatorNeeded(i), 'invisible': !isSeparatorNeeded(i) }"
       >
-        <span class="text-truncate me-1">{{ chat.title || ('Chat ' + chat.id) }}</span>
-        <button
-          type="button"
-          class="btn-close ms-2"
-          aria-label="Close"
-          (click)="prepareToClose(i, $event)"
-        ></button>
-      </a>
-    </li>
+        |
+      </li>
+
+    </ng-container>
+  
     <li class="nav-item">
       <a
         href="javascript:void(0)"
         class="nav-link text-center text-primary fw-bold fs-4"
-        title="New Chat"
+        title="Add New Chat"
         (click)="openNewChatModal()"
-        >+</a
-      >
+      >+</a>
     </li>
-  </ul>
+  </ul>   
 </div>
 
 <!-- Chat Container -->

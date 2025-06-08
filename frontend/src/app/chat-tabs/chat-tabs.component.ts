@@ -36,6 +36,13 @@ export class ChatTabsComponent implements OnInit, AfterViewInit, AfterViewChecke
     private chatService: ChatHistoryService,
     private documentService: DocumentService
   ) {}
+
+  isSeparatorNeeded(index: number): boolean {
+    return index !== this.selected && 
+           index + 1 !== this.selected &&
+           index + 1 < this.chats.length;
+  }
+  
   
   ngAfterViewChecked(): void {
     const el = this.textarea?.nativeElement;
