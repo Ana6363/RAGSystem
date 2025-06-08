@@ -26,6 +26,9 @@
   }
   
   .nav-link {
+    position: relative;
+    padding-right: 0.7rem !important;
+    overflow: visible;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -37,12 +40,20 @@
     font-size: 16px;
     color: #2a2c3b;
 
-    padding-right: 1rem !important;
     max-width: 450px;
     white-space: nowrap;
     text-overflow: ellipsis;
-    overflow: hidden;
+    overflow: visible;
   }
+
+  .nav-link .btn-close {
+    position: relative;
+    margin-top: -1px;
+    width: 0.65rem;
+    height: 0.65rem;
+    flex-shrink: 0;
+  }
+  
 
   .tab-bar-wrapper {
     background-color: #f5f6fa;
