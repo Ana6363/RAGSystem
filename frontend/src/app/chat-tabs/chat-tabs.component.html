@@ -93,12 +93,12 @@
 </div>
 
 <!-- Chat Tabs -->
-<ul class="nav nav-tabs mb-3 flex-nowrap overflow-auto" *ngIf="chats.length">
+<ul class="nav nav-tabs mb-3 flex-wrap" *ngIf="chats.length">
   <li class="nav-item" *ngFor="let chat of chats; index as i">
     <a
       href="javascript:void(0)"
-      class="nav-link chat-tab-inactive"
-      [class.chat-tab-active]="i === selected"
+      class="nav-link"
+      [ngClass]="{ 'active': i === selected }"
       (click)="choose(i)"
       [attr.title]="chat.title || ('Chat ' + chat.id)"
       style="padding-right: 1.5rem;"

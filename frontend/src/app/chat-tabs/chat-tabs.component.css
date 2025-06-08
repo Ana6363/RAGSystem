@@ -1,11 +1,27 @@
-/* styles.css */
-.nav-link.active {
-    font-weight: bold;
-    background-color: #e9ecef;
+  .nav-link.active {
+    font-weight: 500;
+    font-size: 18px;
+    background-color: #FFFF;
+    border-top: 3px solid #803cf2;
+    border-left: 3px solid #803cf2;
+    border-right: 3px solid #803cf2;
+    border-radius: 12px 12px 0 0 !important;
+    border-bottom: 3px solid white !important;
+    margin-bottom: -2.6px !important;
+  }
+
+  .nav-tabs {
+    align-items: flex-end;
+    border-bottom: 3px solid #803cf2;
   }
   
   .nav-link {
     padding-right: 1rem !important;
+    max-width: 450px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    background-color: #f3e8ff;
   }
   
   .btn-close {
