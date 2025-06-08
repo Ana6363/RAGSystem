@@ -93,35 +93,37 @@
 </div>
 
 <!-- Chat Tabs -->
-<ul class="nav nav-tabs mb-3 flex-wrap" *ngIf="chats.length">
-  <li class="nav-item" *ngFor="let chat of chats; index as i">
-    <a
-      href="javascript:void(0)"
-      class="nav-link"
-      [ngClass]="{ 'active': i === selected }"
-      (click)="choose(i)"
-      [attr.title]="chat.title || ('Chat ' + chat.id)"
-      style="padding-right: 1.5rem;"
-    >
-      <span class="text-truncate me-1">{{ chat.title || ('Chat ' + chat.id) }}</span>
-      <button
-        type="button"
-        class="btn-close ms-2"
-        aria-label="Close"
-        (click)="prepareToClose(i, $event)"
-      ></button>
-    </a>
-  </li>
-  <li class="nav-item">
-    <a
-      href="javascript:void(0)"
-      class="nav-link text-center text-primary fw-bold fs-4"
-      title="New Chat"
-      (click)="openNewChatModal()"
-      >+</a
-    >
-  </li>
-</ul>
+<div class="tab-bar-wrapper">
+  <ul class="nav nav-tabs mb-3 flex-wrap" *ngIf="chats.length">
+    <li class="nav-item" *ngFor="let chat of chats; index as i">
+      <a
+        href="javascript:void(0)"
+        class="nav-link"
+        [ngClass]="{ 'active': i === selected }"
+        (click)="choose(i)"
+        [attr.title]="chat.title || ('Chat ' + chat.id)"
+        style="padding-right: 1.5rem;"
+      >
+        <span class="text-truncate me-1">{{ chat.title || ('Chat ' + chat.id) }}</span>
+        <button
+          type="button"
+          class="btn-close ms-2"
+          aria-label="Close"
+          (click)="prepareToClose(i, $event)"
+        ></button>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a
+        href="javascript:void(0)"
+        class="nav-link text-center text-primary fw-bold fs-4"
+        title="New Chat"
+        (click)="openNewChatModal()"
+        >+</a
+      >
+    </li>
+  </ul>
+</div>
 
 <!-- Chat Container -->
 <div *ngIf="chats.length" class="chat-container">
@@ -187,11 +189,8 @@
         <img src="assets/images/send.png" alt="Send" style="width: 35px; height: 35px;" />
       </button>
 
-      
     </form>
-    
   </div>
-
 </div>
 
 <!-- No Chats -->

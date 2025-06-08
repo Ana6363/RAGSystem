@@ -2,5 +2,8 @@ body {
     font-family: "Open Sans", sans-serif;
     -webkit-font-smoothing: antialiased;
     color: rgb(50, 76, 91);
+    margin: 0;
+    padding: 0;
+    background-color: #f5f6fa;
   }
   
