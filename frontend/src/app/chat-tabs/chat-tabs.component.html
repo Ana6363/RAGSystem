@@ -1,27 +1,21 @@
 <!-- New Chat Modal -->
-<div
-  class="modal fade"
-  id="newChatModal"
-  tabindex="-1"
-  aria-labelledby="newChatModalLabel"
-  aria-hidden="true"
->
+<div class="modal fade" id="newChatModal" tabindex="-1" aria-labelledby="newChatModalLabel" aria-hidden="true">
   <div class="modal-dialog">
-    <div class="modal-content">
+    <div class="modal-content new-chat-modal">
       <form (submit)="handleNewChat($event)">
         <div class="modal-header new-chat-modal-header">
-          <h5 class="modal-title" id="newChatModalLabel">Start New Chat</h5>
+          <h5 class="modal-title text-black" id="newChatModalLabel">Start New Chat</h5>
           <button
             type="button"
-            class="btn-close"
+            class="btn-close ms-auto"
             data-bs-dismiss="modal"
             aria-label="Close"
           ></button>
         </div>
-
+        
         <div class="modal-body">
           <div class="mb-3">
-            <label for="chatFile" class="form-label fw-semibold">
+            <label for="chatFile" class="form-label"> 
               Select a file to start the chat
             </label>
             <input
@@ -34,10 +28,10 @@
           </div>
         </div>
 
-        <div class="modal-footer bg-light border-top">
+        <div class="modal-footer new-chat-modal-footer">
           <button
             type="submit"
-            class="btn btn-primary"
+            class="btn create-chat-btn"
             [disabled]="!selectedFile"
           >
             Create Chat
@@ -47,6 +41,7 @@
     </div>
   </div>
 </div>
+
 
 <!-- Confirm Close Modal -->
 <div class="modal fade" id="confirmCloseModal" tabindex="-1" aria-labelledby="confirmCloseModalLabel" aria-hidden="true">
