@@ -25,26 +25,28 @@ export class DashboardComponent {
   }
 
   onChatSelected(chat: any) {
-    this.chatId = chat?.id ?? null;
-    const ids = chat?.fileIds ?? [];
-    console.log('📥 Chat fileIds:', ids);
-  
-    if (!ids.length) {
+  this.selectedChatRef = chat; // <-- Add this line
+  this.chatId = chat?.id ?? null;
+  const ids = chat?.fileIds ?? [];
+  console.log('Chat fileIds:', ids);
+
+  if (!ids.length) {
+    this.currentFiles = [];
+    return;
+  }
+
+  this.documentService.getDocumentsByIds(ids).subscribe({
+    next: (docs) => {
+      console.log('Documents returned:', docs);
+      this.currentFiles = docs;
+    },
+    error: (err) => {
+      console.error('Failed to load docs:', err);
       this.currentFiles = [];
-      return;
     }
-  
-    this.documentService.getDocumentsByIds(ids).subscribe({
-      next: (docs) => {
-        console.log('Documents returned:', docs);
-        this.currentFiles = docs;
-      },
-      error: (err) => {
-        console.error('Failed to load docs:', err);
-        this.currentFiles = [];
-      }
-    });
-  }  
+  });
+}
+
 
   previewFile(file: { id: string; fileName: string }) {
     if (!file || !file.fileName) {
@@ -52,7 +54,7 @@ export class DashboardComponent {
       return;
     }
   
-    console.log('🧪 Previewing file:', file);
+    console.log('Previewing file:', file);
   
     if (!this.selectedChatRef?.id) {
       console.warn('No selected chat context');
@@ -64,7 +66,7 @@ export class DashboardComponent {
       file.fileName
     );
   
-    console.log('📄 Preview URL:', previewUrl);
+    console.log('Preview URL:', previewUrl);
   
     // Open the PDF in a new tab
     window.open(previewUrl, '_blank');
