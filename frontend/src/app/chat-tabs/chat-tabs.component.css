@@ -296,6 +296,12 @@
   .form-label {
     font-weight: normal !important;
   }
-  
 
+  .empty-chat-hint {
+    margin-top: 700px;
+    text-align: center;
+    color: #6c757d;
+    font-size: 1.1rem;
+  }
+  
 

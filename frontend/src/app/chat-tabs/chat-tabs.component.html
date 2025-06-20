@@ -86,7 +86,6 @@
         </a>
       </li>
   
-      <!-- Always render separator, just hide it if not needed -->
       <li
         class="nav-item separator"
         [ngClass]="{ 'visible': isSeparatorNeeded(i), 'invisible': !isSeparatorNeeded(i) }"
@@ -132,6 +131,11 @@
         </div>
       </div>
     </div>
+
+    <div *ngIf="chats[selected]?.messages?.length === 0" class="empty-chat-hint">
+      <p>Write your first message!</p>
+    </div>    
+    
   </div>
 
   <!-- Message Input -->
