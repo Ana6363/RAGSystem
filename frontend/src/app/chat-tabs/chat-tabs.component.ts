@@ -91,7 +91,7 @@ export class ChatTabsComponent implements OnInit, AfterViewInit, AfterViewChecke
     });
   }
 
-  private scrollToBottom(): void {
+  public scrollToBottom(): void {
     try {
       this.messageContainer.nativeElement.scrollTop = this.messageContainer.nativeElement.scrollHeight;
     } catch (err) {

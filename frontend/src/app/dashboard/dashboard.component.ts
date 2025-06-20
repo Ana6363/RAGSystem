@@ -79,7 +79,7 @@ export class DashboardComponent {
   deleteFile(file: { id: string; fileName: string }, event: MouseEvent) {
     event.stopPropagation();
   
-    if (!confirm(`Are you sure you want to delete "${file.fileName}"?`)) return;
+    if (!window.confirm(`Are you sure you want to delete "${file.fileName}"?`)) return;
   
     if (!this.chatId) {
       console.warn('No chat selected — cannot delete file');
