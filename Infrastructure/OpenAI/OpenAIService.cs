@@ -22,7 +22,7 @@ namespace Infrastructure.OpenAI
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _settings.ApiKey);
         }
 
-        public async Task<string> AskChatAsync(string userPrompt)
+        public virtual async Task<string> AskChatAsync(string userPrompt)
         {
             try
             {

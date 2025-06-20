@@ -26,7 +26,7 @@ namespace Domain.Tests.Models
             // Assert
             Assert.Equal(userId, document.UserId);
             Assert.Equal(mockContent.Object, document.content);
-            Assert.Equal(mockFileName.Object, document.fileName);
+            Assert.Equal(mockFileName.Object, document.FileName);
             Assert.False(string.IsNullOrEmpty(document.Id));
         }
 
