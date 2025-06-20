@@ -1,6 +1,8 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideHttpClient, HttpClient } from '@angular/common/http';
 import { UserService } from './user.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 describe('UserService', () => {
   let service: UserService;
@@ -9,8 +11,11 @@ describe('UserService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [UserService]
+      providers: [
+        UserService,
+        provideHttpClient(),
+        provideHttpClientTesting()
+      ]
     });
 
     service = TestBed.inject(UserService);
@@ -25,29 +30,78 @@ describe('UserService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('checkVat should GET with vat param', () => {
+  describe('checkVat', () => {
     const vat = '123456789';
 
-    service.checkVat(vat).subscribe();
+    it('should GET user by VAT (200)', () => {
+      const mockResponse = { name: 'Test User', vat };
 
-    const req = httpMock.expectOne(request => 
-      request.method === 'GET' &&
-      request.url === `${apiUrl}/vat` &&
-      request.params.get('vat') === vat
-    );
+      service.checkVat(vat).subscribe((res: any) => {
+        expect(res).toEqual(mockResponse);
+      });
 
-    expect(req).toBeTruthy();
-    req.flush({}); // mock empty response
+      const req = httpMock.expectOne(
+        r => r.method === 'GET' && r.url === `${apiUrl}/vat` && r.params.get('vat') === vat
+      );
+      expect(req.request.method).toBe('GET');
+      req.flush(mockResponse, { status: 200, statusText: 'OK' });
+    });
+
+    it('should return 404 if user not found', () => {
+      service.checkVat(vat).subscribe({
+        error: (error: HttpErrorResponse) => {
+          expect(error.status).toBe(404);
+        }
+      });
+
+      const req = httpMock.expectOne(`${apiUrl}/vat?vat=${vat}`);
+      req.flush({ message: 'User not found.' }, { status: 404, statusText: 'Not Found' });
+    });
   });
 
-  it('createUser should POST with trimmed VATNumber in body', () => {
-    const vat = '  123456789  ';
+  describe('createUser', () => {
+    const vat = ' 123456789 ';
+    const trimmedVat = vat.trim();
+    const body = { VATNumber: trimmedVat };
 
-    service.createUser(vat).subscribe();
+    it('should POST to create user (200)', () => {
+      const mockResponse = { id: 'u123', vat: trimmedVat };
 
-    const req = httpMock.expectOne(`${apiUrl}/create`);
-    expect(req.request.method).toBe('POST');
-    expect(req.request.body).toEqual({ VATNumber: vat.trim() });
-    req.flush({}); // mock empty response
+      service.createUser(vat).subscribe((res: any) => {
+        expect(res).toEqual(mockResponse);
+      });
+
+      const req = httpMock.expectOne(`${apiUrl}/create`);
+      expect(req.request.method).toBe('POST');
+      expect(req.request.body).toEqual(body);
+      req.flush(mockResponse, { status: 200, statusText: 'OK' });
+    });
+
+    it('should return 400 if VAT already exists', () => {
+      const errorMsg = { message: 'User with this VAT already exists.' };
+
+      service.createUser(vat).subscribe({
+        error: (error: HttpErrorResponse) => {
+          expect(error.status).toBe(400);
+          expect(error.error).toEqual(errorMsg);
+        }
+      });
+
+      const req = httpMock.expectOne(`${apiUrl}/create`);
+      req.flush(errorMsg, { status: 400, statusText: 'Bad Request' });
+    });
+
+    it('should return 500 on unexpected server error', () => {
+      service.createUser(vat).subscribe({
+        error: (error: HttpErrorResponse) => {
+          expect(error.status).toBe(500);
+        }
+      });
+
+      const req = httpMock.expectOne(`${apiUrl}/create`);
+      req.flush({ message: 'Unexpected error.' }, { status: 500, statusText: 'Internal Server Error' });
+    });
   });
+
+  
 });
