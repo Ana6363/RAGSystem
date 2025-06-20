@@ -348,5 +348,12 @@ export class ChatTabsComponent implements OnInit, AfterViewInit, AfterViewChecke
     });
   }
   
+  handleKeyDown(event: KeyboardEvent): void {
+  if (event.key === 'Enter' && !event.shiftKey) {
+    event.preventDefault(); // Prevent newline
+    this.sendMessage();     // Send message
+  }
+}
+
 
 }
