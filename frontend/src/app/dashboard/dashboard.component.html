@@ -19,18 +19,20 @@
       
         <!-- Robot image -->
         <img
-          src="assets/images/robotCut.png"
-          alt="Robot"
-          style="
-            position: absolute;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            height: 250px;
-            object-fit: contain;
-            z-index: 2;
-          "
+        *ngIf="currentFiles && currentFiles.length > 0; else noFilesRobot"
+        src="assets/images/robotCut.png"
+        alt="Robot"
+        style="position: absolute; top: 10px; left: 50%; transform: translateX(-50%); height: 250px; object-fit: contain; z-index: 2;"
         />
+
+        <ng-template #noFilesRobot>
+        <img
+          src="assets/images/robotCutLooking.png"
+          alt="No Files Robot"
+          style="position: absolute; top: 50px; left: 50%; transform: translateX(-50%); height: 290px; object-fit: contain; z-index: 2;"
+        />
+        </ng-template>
+
       </div>
       
       <ng-container *ngIf="currentFiles && currentFiles.length; else noFiles">
@@ -56,8 +58,8 @@
       </ng-container>
 
       <ng-template #noFiles>
-        <p class="small" style="color: #b0aede;">No files attached.</p>
-      </ng-template>
+        <p class="small" style="color: #626466; margin-top: 240px;">No files attached.</p>
+      </ng-template>      
     </div>
 
     <div class="vat-wrapper position-relative">
