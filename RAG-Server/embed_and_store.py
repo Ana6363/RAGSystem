@@ -34,7 +34,7 @@ def embed_and_store(file_id: str):
     if not content:
         raise ValueError(f"No content found for document with _id={file_id}")
 
-    print(f"✅ Loaded content from MongoDB for file_id={file_id}")
+    print(f"Loaded content from MongoDB for file_id={file_id}")
 
     # Turn content string into LangChain Documents
     from langchain.docstore.document import Document
@@ -45,7 +45,7 @@ def embed_and_store(file_id: str):
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100)
     chunks = text_splitter.split_documents(docs)
 
-    print(f"📄 Split content into {len(chunks)} chunks")
+    print(f"Split content into {len(chunks)} chunks")
 
     # Creates embeddings
     embeddings = OpenAIEmbeddings(api_key=OPENAI_API_KEY)
@@ -59,7 +59,7 @@ def embed_and_store(file_id: str):
         collection_name=QDRANT_COLLECTION,
     )
 
-    print(f"✅ Embedded and stored {len(chunks)} chunks in Qdrant Cloud!")
+    print(f"Embedded and stored {len(chunks)} chunks in Qdrant Cloud!")
 
 
 # Example usage
