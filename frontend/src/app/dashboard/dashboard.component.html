@@ -60,20 +60,28 @@
       </ng-template>
     </div>
 
-    <div style="color: #aaa6cc; font-size: 0.875rem;">
-      <span (click)="toggleLogoffOptions()" style="cursor: pointer; user-select: none;">Logged in with VAT: {{ vatNumber }}</span>
-      <div *ngIf="showLogoffOptions" class="mt-2">
-        <button
-          class="btn btn-sm"
-          (click)="logoff()"
-          style="border: 1px solid #e57373; color: #e57373; background-color: transparent; border-radius: 4px; transition: all 0.2s ease;"
-          onmouseover="this.style.backgroundColor='#e57373'; this.style.color='white';"
-          onmouseout="this.style.backgroundColor='transparent'; this.style.color='#e57373';"
-        >
-          Logoff
+    <div class="vat-wrapper position-relative">
+      <img src="assets/images/user.png" class="vat-avatar" />
+      <span class="vat-label"> {{ vatNumber }}</span>
+      
+      <!-- 3-dot icon to toggle the dropdown -->
+      <img
+        src="assets/images/3dots.png"
+        class="dots-icon"
+        (click)="toggleDropdown()"
+        alt="Options"
+      />
+    
+      <!-- Dropdown menu -->
+      <div *ngIf="dropdownVisible" class="dropdown-menu-custom">
+        <button (click)="logoff()" class="dropdown-item d-flex align-items-center gap-2">
+          <img src="assets/images/logout.png" alt="Logout" style="width: 16px; height: 16px; margin-left: -8px; margin-right: 7px;" />
+          <span>Sign Out</span>
         </button>
       </div>
+      
     </div>
+
   </div>
 
   <!-- Main chat panel -->
