@@ -9,6 +9,7 @@ import { DocumentService } from '../document.service';
   standalone: true,
   selector: 'app-dashboard',
   imports: [CommonModule, ChatTabsComponent],
+  styleUrls: ['./dashboard.component.css'],
   templateUrl: './dashboard.component.html'
 })
 
@@ -18,14 +19,19 @@ export class DashboardComponent {
   selectedChatRef: any = null;
   chatId: string | null = null;
   showLogoffOptions: boolean = false;
+  dropdownVisible = false;
 
   constructor(private authService: AuthService, private documentService: DocumentService, private router: Router) {
     if (!authService.isLoggedIn()) router.navigate(['/']);
     this.vatNumber = authService.vatNumber;
   }
 
+  toggleDropdown(): void {
+    this.dropdownVisible = !this.dropdownVisible;
+  }
+
   onChatSelected(chat: any) {
-  this.selectedChatRef = chat; // <-- Add this line
+  this.selectedChatRef = chat;
   this.chatId = chat?.id ?? null;
   const ids = chat?.fileIds ?? [];
   console.log('Chat fileIds:', ids);
