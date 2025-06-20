@@ -4,7 +4,7 @@
     <div class="modal-content new-chat-modal">
       <form (submit)="handleNewChat($event)">
         <div class="modal-header new-chat-modal-header">
-          <h5 class="modal-title text-black" id="newChatModalLabel">Start New Chat</h5>
+          <h5 class="modal-title text-black" id="newChatModalLabel">New Chat</h5>
           <button
             type="button"
             class="btn-close ms-auto"
@@ -16,7 +16,7 @@
         <div class="modal-body">
           <div class="mb-3">
             <label for="chatFile" class="form-label"> 
-              Select a file to start the chat
+              Select a file to start a new chat
             </label>
             <input
               type="file"
@@ -177,7 +177,15 @@
 </div>
 
 <!-- No Chats -->
+<!-- No Chats -->
 <div *ngIf="!chats.length" class="d-flex flex-column align-items-center justify-content-center text-center py-5">
+  <!-- Robot image -->
+  <img
+    src="assets/images/robotSleeping.png"
+    alt="Robot sleeping"
+    style="width: 180px; height: auto; margin-bottom: 1rem;"
+  />
+
   <p class="mb-3 text-muted" style="font-size: 1.1rem;">You don't have any chats yet.</p>
   
   <button
@@ -191,6 +199,7 @@
 
   <p class="mt-2" style="font-size: 0.9rem; color: #803cf2;">Start a new chat</p>
 </div>
+
 
 
 <!-- Hidden File Input -->
