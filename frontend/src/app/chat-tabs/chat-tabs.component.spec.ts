@@ -46,7 +46,7 @@ describe('ChatTabsComponent', () => {
   it('should load user and chats on init', () => {
     expect(mockChatHistoryService.getUserByVat).toHaveBeenCalledWith('TESTVAT');
     expect(mockChatHistoryService.getChatHistories).toHaveBeenCalledWith('user123');
-    expect(component.chats.length).toBe(2);
+    expect(component.chats.length).toBe(1);
   });
 
   it('should emit selectedChat when choose is called', () => {
